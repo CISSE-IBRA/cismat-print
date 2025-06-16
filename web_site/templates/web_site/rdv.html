@@ -1,0 +1,741 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Prendre rendez-vous</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'web_site/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'web_site/lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'web_site/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'web_site/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'web_site/css/toastr.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'web_site/css/style.css' %}" rel="stylesheet">
+
+    <!-- partie prise de rendez --> 
+    <link rel="stylesheet" href="{% static 'web_site/css/index.css' %}">
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+
+<body>
+
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    
+
+    <!-- Navbar & Hero Start -->
+    {% include 'web_site/navbar.html' %}
+
+    <!-- Booking Process -->
+    <section class="py-5" id="booking-form">
+        <div class="rdv-header-section py-4 mb-4 position-relative overflow-hidden" style="background: linear-gradient(90deg, #fff7ed 0%, #e0e7ff 100%); border-radius: 1rem;">
+            <!-- Dynamic Background Canvas -->
+            <canvas id="rdv-bg-canvas" class="position-absolute top-0 start-0 w-100 h-100" style="z-index:0; pointer-events:none;"></canvas>
+            <h2 class="text-center mb-2 fw-bold position-relative" style="font-family: 'Inter', sans-serif; letter-spacing: 1px; z-index:1; color: #ff8800;">
+            Prenez rendez-vous en quelques étapes simples
+            </h2>
+            <p class="text-center text-muted mb-0 position-relative" style="font-size: 1.1rem; z-index:1;">
+            Notre équipe vous accompagne pour concrétiser votre projet d'impression.
+            </p>
+        </div>
+        <style>
+            .rdv-header-section {
+            box-shadow: 0 4px 24px rgba(255, 136, 0, 0.08);
+            transition: box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            }
+            .rdv-header-section:hover {
+            box-shadow: 0 8px 32px rgba(80, 112, 255, 0.16);
+            }
+            #rdv-bg-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            }
+        </style>
+        <script>
+            // Animation légère sur le titre lors du chargement
+            document.addEventListener('DOMContentLoaded', function() {
+            const header = document.querySelector('.rdv-header-section h2');
+            if(header) {
+            header.classList.add('animate__animated', 'animate__fadeInDown');
+            }
+
+            // Dynamic background animation (orange & blue bubbles)
+            const canvas = document.getElementById('rdv-bg-canvas');
+            if (canvas) {
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            const ctx = canvas.getContext('2d');
+            const bubbles = [];
+            // Orange and blue palette
+            const colors = [
+                '#ff8800',    // orange
+                '#ffb347',    // light orange
+                '#506fff',    // blue
+                '#a5b4fc',    // light blue
+            ];
+
+            function randomBetween(a, b) {
+                return a + Math.random() * (b - a);
+            }
+
+            for (let i = 0; i < 18; i++) {
+                bubbles.push({
+                x: randomBetween(0, canvas.width),
+                y: randomBetween(0, canvas.height),
+                r: randomBetween(16, 48),
+                dx: randomBetween(-0.2, 0.2),
+                dy: randomBetween(0.1, 0.5),
+                color: colors[Math.floor(Math.random() * colors.length)],
+                alpha: randomBetween(0.15, 0.35)
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let b of bubbles) {
+                ctx.globalAlpha = b.alpha;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r, 0, 2 * Math.PI);
+                ctx.fillStyle = b.color;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                b.y += b.dy;
+                b.x += b.dx;
+                if (b.y - b.r > canvas.height) {
+                    b.y = -b.r;
+                    b.x = randomBetween(0, canvas.width);
+                }
+                if (b.x - b.r > canvas.width || b.x + b.r < 0) {
+                    b.x = randomBetween(0, canvas.width);
+                }
+                }
+                requestAnimationFrame(animate);
+            }
+            animate();
+            }
+            });
+        </script>
+        <div class="container">
+            <!-- Progress Steps -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="print-step-progress text-center">
+                        <div class="row">
+                            <div class="col print-step active" id="progress-step-1">
+                                <div class="print-step-icon">1</div>
+                                <div class="fw-bold">Type de projet</div>
+                            </div>
+                            <div class="col print-step" id="progress-step-2">
+                                <div class="print-step-icon">2</div>
+                                <div class="fw-bold">Créneau</div>
+                            </div>
+                            <div class="col print-step" id="progress-step-3">
+                                <div class="print-step-icon">3</div>
+                                <div class="fw-bold">Confirmation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="print-card bg-white p-4 p-lg-5">
+                        <div id="booking-steps">
+                            <!-- Étape 1 : Type de projet -->
+                            <div class="booking-step active animate__animated animate__fadeIn" id="step-1">
+                                <div class="text-center mb-5">
+                                    <h2 class="mb-3">Quel type de projet souhaitez-vous discuter ?</h2>
+                                    <p class="text-muted">Sélectionnez une catégorie pour personnaliser votre rendez-vous</p>
+                                </div>
+                                
+                                <div class="row g-4 justify-content-center">
+                                    <!-- Grand format -->
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="print-service-card text-center p-4 rounded-4 h-100 shadow-sm border-0 position-relative service-card-bordered" data-service="grand_format" tabindex="0" style="background: linear-gradient(135deg, #fff3e6 60%, #e0f2ff 100%); transition: box-shadow 0.2s, transform 0.2s; border: 2.5px solid #ff8800;">
+                                            <div class="service-icon-wrapper mx-auto mb-3 position-relative" style="width:72px; height:72px;">
+                                                <span class="service-bg-glow position-absolute top-0 start-0 w-100 h-100 rounded-circle" style="background: radial-gradient(circle, #ff6f00 0%, #fff3e6 80%); opacity:0.18; z-index:0;"></span>
+                                                <span class="bg-white p-3 rounded-circle d-inline-block position-relative" style="z-index:1; border: 2px solid #ff8800;">
+                                                    <i class="fas fa-expand fa-2x" style="color:#ff6f00;"></i>
+                                                </span>
+                                            </div>
+                                            <h5 class="fw-bold mb-2" style="color:#ff6f00;">Grand format</h5>
+                                            <p class="text-muted small mb-3">Bâches, kakemono, vinyle, etc...</p>
+                                            <div class="service-hover-arrow position-absolute bottom-0 end-0 m-3" style="opacity:0; transition:opacity 0.2s;">
+                                                <i class="fas fa-arrow-right" style="color:#00b8d9;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Petit format -->
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="print-service-card text-center p-4 rounded-4 h-100 shadow-sm border-0 position-relative service-card-bordered" data-service="petit_format" tabindex="0" style="background: linear-gradient(135deg, #e0f2ff 60%, #fff3e6 100%); transition: box-shadow 0.2s, transform 0.2s; border: 2.5px solid #00b8d9;">
+                                            <div class="service-icon-wrapper mx-auto mb-3 position-relative" style="width:72px; height:72px;">
+                                                <span class="service-bg-glow position-absolute top-0 start-0 w-100 h-100 rounded-circle" style="background: radial-gradient(circle, #00b8d9 0%, #e0f2ff 80%); opacity:0.18; z-index:0;"></span>
+                                                <span class="bg-white p-3 rounded-circle d-inline-block position-relative" style="z-index:1; border: 2px solid #00b8d9;">
+                                                    <i class="fas fa-clone fa-2x" style="color:#00b8d9;"></i>
+                                                </span>
+                                            </div>
+                                            <h5 class="fw-bold mb-2" style="color:#00b8d9;">Petit format</h5>
+                                            <p class="text-muted small mb-3">Flyers, cartes de visite, brochures, etc...</p>
+                                            <div class="service-hover-arrow position-absolute bottom-0 end-0 m-3" style="opacity:0; transition:opacity 0.2s;">
+                                                <i class="fas fa-arrow-right" style="color:#ff6f00;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Gadget et pub -->
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="print-service-card text-center p-4 rounded-4 h-100 shadow-sm border-0 position-relative service-card-bordered" data-service="gadget_pub" tabindex="0" style="background: linear-gradient(135deg, #fff3e6 60%, #e0f2ff 100%); transition: box-shadow 0.2s, transform 0.2s; border: 2.5px solid #ff8800;">
+                                            <div class="service-icon-wrapper mx-auto mb-3 position-relative" style="width:72px; height:72px;">
+                                                <span class="service-bg-glow position-absolute top-0 start-0 w-100 h-100 rounded-circle" style="background: radial-gradient(circle, #ff6f00 0%, #fff3e6 80%); opacity:0.18; z-index:0;"></span>
+                                                <span class="bg-white p-3 rounded-circle d-inline-block position-relative" style="z-index:1; border: 2px solid #ff8800;">
+                                                    <i class="fas fa-gift fa-2x" style="color:#ff6f00;"></i>
+                                                </span>
+                                            </div>
+                                            <h5 class="fw-bold mb-2" style="color:#ff6f00;">Gadget et pub</h5>
+                                            <p class="text-muted small mb-3">Objets publicitaires, stylos, tasses, etc...</p>
+                                            <div class="service-hover-arrow position-absolute bottom-0 end-0 m-3" style="opacity:0; transition:opacity 0.2s;">
+                                                <i class="fas fa-arrow-right" style="color:#00b8d9;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <style>
+                                .print-service-card {
+                                    cursor: pointer;
+                                    border: 2.5px solid transparent;
+                                    transition: box-shadow 0.2s, border 0.2s, transform 0.2s;
+                                    box-shadow: 0 2px 12px rgba(0,184,217,0.08);
+                                    position: relative;
+                                }
+                                .print-service-card.selected, .print-service-card:focus {
+                                    border: 2.5px solid #ff8800;
+                                    box-shadow: 0 0 0 0.2rem rgba(255,111,0,.15), 0 4px 24px rgba(255,111,0,0.12);
+                                    background: linear-gradient(90deg, #fff3e6 0%, #e0f2ff 100%);
+                                    transform: translateY(-4px) scale(1.03);
+                                    outline: none;
+                                }
+                                .print-service-card[data-service="petit_format"].selected, .print-service-card[data-service="petit_format"]:focus {
+                                    border: 2.5px solid #00b8d9;
+                                }
+                                .print-service-card:hover {
+                                    border: 2.5px solid #00b8d9;
+                                    box-shadow: 0 8px 32px rgba(0,184,217,0.13);
+                                    transform: translateY(-2px) scale(1.01);
+                                }
+                                .print-service-card:hover .service-hover-arrow,
+                                .print-service-card.selected .service-hover-arrow {
+                                    opacity: 1;
+                                }
+                                .service-icon-wrapper {
+                                    box-shadow: 0 2px 8px rgba(0,184,217,0.10);
+                                }
+                                /* Ajout du contour personnalisé sur les 3 blocs */
+                                .service-card-bordered {
+                                    border: 3px solid #506fff !important;
+                                    box-shadow: 0 0 0 4px #e0e7ff;
+                                }
+                                @media (max-width: 767px) {
+                                    .print-service-card {
+                                        margin-bottom: 1rem;
+                                    }
+                                }
+                                </style>
+                                <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    let selectedService = null;
+                                    const cards = document.querySelectorAll('.print-service-card');
+                                    cards.forEach(card => {
+                                        card.addEventListener('click', function() {
+                                            cards.forEach(c => c.classList.remove('selected'));
+                                            this.classList.add('selected');
+                                            selectedService = this.getAttribute('data-service');
+                                        });
+                                        card.addEventListener('keydown', function(e) {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                this.click();
+                                            }
+                                        });
+                                    });
+                                });
+                                </script>
+                                <div class="d-flex justify-content-end mt-5">
+                                    <button class="btn btn-warning px-5 py-3 rounded-pill shadow" style="background: linear-gradient(90deg, #ff8800 0%, #506fff 100%); border: none; color: #fff;" onclick="nextStep(2)">
+                                        Continuer <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Étape 2 : Calendrier et informations -->
+                            <div class="booking-step d-none" id="step-2">
+                                <div class="text-center mb-5">
+                                    <h2 class="mb-3">Choisissez votre créneau</h2>
+                                    <p class="text-muted">Sélectionnez une date et heure disponible pour votre consultation</p>
+                                </div>
+                                
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Date et heure *</label>
+                                            <input type="text" class="form-control" id="booking-date" placeholder="Sélectionnez une date">
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Mode de rendez-vous *</label>
+                                            <div class="btn-group w-100" role="group">
+                                                <input type="radio" class="btn-check" name="meetingType" id="visio" autocomplete="off" checked>
+                                                <label class="btn btn-outline-primary" for="visio">
+                                                    <i class="fas fa-video me-2"></i> Visioconférence
+                                                </label>
+                                                
+                                                <input type="radio" class="btn-check" name="meetingType" id="phone" autocomplete="off">
+                                                <label class="btn btn-outline-primary" for="phone">
+                                                    <i class="fas fa-phone-alt me-2"></i> Téléphone
+                                                </label>
+                                                
+                                                <input type="radio" class="btn-check" name="meetingType" id="presentiel" autocomplete="off">
+                                                <label class="btn btn-outline-primary" for="presentiel">
+                                                    <i class="fas fa-map-marker-alt me-2"></i> En agence
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Durée estimée *</label>
+                                            <div class="row g-3">
+                                                {% comment %} 15 min {% endcomment %}
+                                                <div class="col-6 col-md-4">
+                                                    <input type="radio" class="btn-check" name="duration" id="duration-15" autocomplete="off">
+                                                    <label class="btn btn-outline-secondary w-100 py-3 shadow-sm rounded-4 d-flex flex-column align-items-center duration-card" for="duration-15">
+                                                        <span class="duration-icon mb-2"><i class="far fa-clock"></i></span>
+                                                        <span class="fs-5 fw-semibold mb-1">15 min</span>
+                                                        <span class="text-muted small mb-1">Question rapide</span>
+                                                    </label>
+                                                </div>
+                                                {% comment %} 30 min {% endcomment %}
+                                                <div class="col-6 col-md-4">
+                                                    <input type="radio" class="btn-check" name="duration" id="duration-30" autocomplete="off" checked>
+                                                    <label class="btn btn-outline-primary w-100 py-3 shadow-sm rounded-4 d-flex flex-column align-items-center duration-card" for="duration-30">
+                                                        <span class="duration-icon mb-2"><i class="far fa-clock"></i></span>
+                                                        <span class="fs-5 fw-semibold mb-1">30 min</span>
+                                                        <span class="text-muted small mb-1">Projet simple</span>
+                                                    </label>
+                                                </div>
+                                                {% comment %} 45 min {% endcomment %}
+                                                <div class="col-6 col-md-4">
+                                                    <input type="radio" class="btn-check" name="duration" id="duration-45" autocomplete="off">
+                                                    <label class="btn btn-outline-warning w-100 py-3 shadow-sm rounded-4 d-flex flex-column align-items-center duration-card" for="duration-45">
+                                                        <span class="duration-icon mb-2"><i class="far fa-clock"></i></span>
+                                                        <span class="fs-5 fw-semibold mb-1">45 min</span>
+                                                        <span class="text-muted small mb-1 text-warning">Projet intermédiaire</span>
+                                                    </label>
+                                                </div>
+                                                {% comment %} 1h {% endcomment %}
+                                                <div class="col-6 col-md-4">
+                                                    <input type="radio" class="btn-check" name="duration" id="duration-60" autocomplete="off">
+                                                    <label class="btn btn-outline-success w-100 py-3 shadow-sm rounded-4 d-flex flex-column align-items-center duration-card" for="duration-60">
+                                                        <span class="duration-icon mb-2"><i class="far fa-clock"></i></span>
+                                                        <span class="fs-5 fw-semibold mb-1">1 heure</span>
+                                                        <span class="text-muted small mb-1 text-success">Projet complexe</span>
+                                                    </label>
+                                                </div>
+                                                {% comment %} 1h30 {% endcomment %}
+                                                <div class="col-6 col-md-4">
+                                                    <input type="radio" class="btn-check" name="duration" id="duration-90" autocomplete="off">
+                                                    <label class="btn btn-outline-info w-100 py-3 shadow-sm rounded-4 d-flex flex-column align-items-center duration-card" for="duration-90">
+                                                        <span class="duration-icon mb-2"><i class="far fa-clock"></i></span>
+                                                        <span class="fs-5 fw-semibold mb-1">1h30</span>
+                                                        <span class="text-muted small mb-1 text-info">Projet très détaillé</span>
+                                                    </label>
+                                                </div>
+                                                {% comment %} 2h {% endcomment %}
+                                                <div class="col-6 col-md-4">
+                                                    <input type="radio" class="btn-check" name="duration" id="duration-120" autocomplete="off">
+                                                    <label class="btn btn-outline-dark w-100 py-3 shadow-sm rounded-4 d-flex flex-column align-items-center duration-card" for="duration-120">
+                                                        <span class="duration-icon mb-2"><i class="far fa-clock"></i></span>
+                                                        <span class="fs-5 fw-semibold mb-1">2 heures</span>
+                                                        <span class="text-muted small mb-1 text-dark">Projet exceptionnel</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            <style>
+                                                .duration-card {
+                                                    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+                                                    border: 2px solid transparent;
+                                                    background: #f8fafc;
+                                                    position: relative;
+                                                }
+                                                .btn-check:checked + .duration-card,
+                                                .duration-card:focus {
+                                                    border-color: #ff8800 !important;
+                                                    background: linear-gradient(90deg, #fff7ed 0%, #e0e7ff 100%);
+                                                    box-shadow: 0 4px 16px rgba(255,136,0,0.10);
+                                                }
+                                                .duration-card:hover {
+                                                    border-color: #506fff !important;
+                                                    background: linear-gradient(90deg, #e0e7ff 0%, #fff7ed 100%);
+                                                    box-shadow: 0 4px 16px rgba(80,111,255,0.10);
+                                                }
+                                                .duration-icon {
+                                                    font-size: 2rem;
+                                                    color: #ff8800;
+                                                    background: #fff7ed;
+                                                    border-radius: 50%;
+                                                    padding: 0.5rem 0.7rem;
+                                                    box-shadow: 0 2px 8px rgba(255,136,0,0.08);
+                                                }
+                                                @media (max-width: 767px) {
+                                                    .duration-card {
+                                                        margin-bottom: 1rem;
+                                                    }
+                                                }
+                                            </style>
+                                    </div>
+                                    
+                                    <div class="col-lg-6">
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Informations complémentaires</label>
+                                            <textarea class="form-control" rows="4" placeholder="Décrivez brièvement votre projet, vos attentes, vos contraintes..."></textarea>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Fichiers à partager (optionnel)</label>
+                                            <div class="print-upload-area rounded-3 p-4 text-center mb-2" id="file-drop-area">
+                                                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
+                                                <p class="mb-1">Glissez-déposez vos fichiers ici</p>
+                                                <small class="text-muted">Formats acceptés : PDF, AI, PSD, JPG, PNG (max. 20MB)</small>
+                                                <input type="file" class="d-none" id="file-upload" multiple>
+                                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="document.getElementById('file-upload').click()">
+                                                    <i class="fas fa-folder-open me-1"></i> Parcourir
+                                                </button>
+                                            </div>
+                                            <div id="file-previews" class="d-flex flex-wrap gap-2"></div>
+                                        </div>
+                                        
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Pour une consultation optimale, partagez vos maquettes, briefs ou exemples d'inspiration.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mt-5">
+                                    <button class="btn btn-outline-secondary px-4 py-2 rounded-pill" onclick="prevStep(1)">
+                                        <i class="fas fa-arrow-left me-2"></i> Retour
+                                    </button>
+                                    <button class="btn btn-warning px-5 py-3 rounded-pill shadow" style="background: linear-gradient(90deg, #ff8800 0%, #506fff 100%); border: none; color: #fff;" onclick="nextStep(3)">
+                                        Continuer <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Étape 3 : Confirmation -->
+                            <div class="booking-step d-none" id="step-3">
+                                <div class="text-center mb-5">
+                                    <h2 class="mb-3 fw-bold" style="color:#ff8800; letter-spacing:1px;">
+                                        <i class="fas fa-user-check me-2 text-primary"></i>Confirmez votre rendez-vous
+                                    </h2>
+                                    <p class="text-muted fs-5">Vérifiez vos informations avant validation finale</p>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-9">
+                                        <div class="row g-4 mb-4">
+                                            <div class="col-md-6">
+                                                <div class="border rounded-3 p-3 h-100">
+                                                    <h5 class="mb-3 text-primary"><i class="fas fa-calendar-alt me-2"></i> Détails du rendez-vous</h5>
+                                                    <p class="mb-2"><strong>Date :</strong> <span id="confirm-date">--</span></p>
+                                                    <p class="mb-2"><strong>Heure :</strong> <span id="confirm-time">--</span></p>
+                                                    <p class="mb-2"><strong>Durée :</strong> <span id="confirm-duration">--</span></p>
+                                                    <p class="mb-2"><strong>Mode :</strong> <span id="confirm-mode">--</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="border rounded-3 p-3 h-100">
+                                                    <h5 class="mb-3 text-primary"><i class="fas fa-print me-2"></i> Projet</h5>
+                                                    <p class="mb-2"><strong>Type :</strong> <span id="confirm-service">--</span></p>
+                                                    <p class="mb-2"><strong>Fichiers :</strong> <span id="confirm-files">0</span> partagés</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <form class="row g-4 needs-validation" novalidate>
+                                            <div class="col-md-6">
+                                                <label for="fullname" class="form-label fw-bold">Nom complet <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control form-control-lg rounded-3" id="fullname" required>
+                                                <div class="invalid-feedback">Veuillez entrer votre nom complet.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="email" class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control form-control-lg rounded-3" id="email" required>
+                                                <div class="invalid-feedback">Veuillez entrer un email valide.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="phone" class="form-label fw-bold">Téléphone <span class="text-danger">*</span></label>
+                                                <input type="tel" class="form-control form-control-lg rounded-3" id="phone" required>
+                                                <div class="invalid-feedback">Veuillez entrer votre numéro de téléphone.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="company" class="form-label fw-bold">Entreprise <span class="text-muted">(optionnel)</span></label>
+                                                <input type="text" class="form-control form-control-lg rounded-3" id="company">
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" id="consent" required>
+                                                    <label class="form-check-label" for="consent">
+                                                        J'accepte la <a href="#" class="text-decoration-underline">politique de confidentialité</a> et souhaite recevoir des rappels <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="invalid-feedback">Vous devez accepter la politique de confidentialité.</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 d-flex justify-content-between mt-4">
+                                                <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-pill" onclick="prevStep(2)">
+                                                    <i class="fas fa-arrow-left me-2"></i> Retour
+                                                </button>
+                                                <button type="button" class="btn btn-success px-5 py-3 rounded-pill shadow" onclick="submitBooking()">
+                                                    <i class="fas fa-check-circle me-2"></i> Confirmer le rendez-vous
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <style>
+                                    #step-3 .print-card {
+                                        background: linear-gradient(90deg, #fff7ed 0%, #e0e7ff 100%);
+                                        border-left: 6px solid #ff8800;
+                                    }
+                                    #step-3 h2, #step-3 h5 {
+                                        font-family: 'Inter', sans-serif;
+                                    }
+                                    #step-3 .form-control:focus {
+                                        border-color: #ff8800;
+                                        box-shadow: 0 0 0 0.2rem rgba(255,136,0,.15);
+                                    }
+                                    #step-3 .btn-success {
+                                        background: linear-gradient(90deg, #ff8800 0%, #506fff 100%);
+                                        border: none;
+                                    }
+                                    #step-3 .btn-success:hover {
+                                        background: linear-gradient(90deg, #506fff 0%, #ff8800 100%);
+                                    }
+                                    #step-3 .btn-outline-secondary {
+                                        border-radius: 2rem;
+                                    }
+                                    #step-3 .form-check-input:checked {
+                                        background-color: #ff8800;
+                                        border-color: #ff8800;
+                                    }
+                                </style>
+                                <script>
+                                    // Bootstrap validation
+                                    (function () {
+                                        'use strict'
+                                        var forms = document.querySelectorAll('.needs-validation')
+                                        Array.prototype.slice.call(forms)
+                                            .forEach(function (form) {
+                                                form.addEventListener('submit', function (event) {
+                                                    if (!form.checkValidity()) {
+                                                        event.preventDefault()
+                                                        event.stopPropagation()
+                                                    }
+                                                    form.classList.add('was-validated')
+                                                }, false)
+                                            })
+                                    })()
+                                </script>
+                            </div>
+                            <!-- Confirmation finale (cachée) -->
+                            <div class="booking-step d-none text-center" id="step-confirmation">
+                                <div class="confetti" id="print-confetti"></div>
+                                <div class="confirmation-icon animate__animated animate__bounceIn">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <h2 class="mb-3 animate__animated animate__fadeInUp">Rendez-vous confirmé !</h2>
+                                <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Nous avons hâte de discuter de votre projet d'impression</p>
+                                
+                                <div class="print-card bg-white rounded-4 shadow-lg p-5 mb-5 mx-auto animate__animated animate__zoomIn animate__delay-2s" style="max-width: 520px; border-left: 6px solid #ff8800; border-top: 2px solid #506fff;">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="rounded-circle bg-gradient" style="background: linear-gradient(135deg, #ff8800 60%, #506fff 100%); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-calendar-check fa-2x text-white"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-0 fw-bold" style="color:#ff8800;">Votre rendez-vous est confirmé</h5>
+                                            <small class="text-muted">Merci pour votre confiance !</small>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush mb-3">
+                                        <li class="list-group-item bg-transparent px-0 d-flex justify-content-between align-items-center">
+                                            <span><i class="fas fa-hashtag text-primary me-2"></i>Référence :</span>
+                                            <span class="fw-semibold text-primary">PRINT-<span id="booking-ref">0000</span></span>
+                                        </li>
+                                        <li class="list-group-item bg-transparent px-0 d-flex justify-content-between align-items-center">
+                                            <span><i class="fas fa-calendar-alt text-warning me-2"></i>Date :</span>
+                                            <span id="final-date" class="fw-semibold">--</span>
+                                        </li>
+                                        <li class="list-group-item bg-transparent px-0 d-flex justify-content-between align-items-center">
+                                            <span><i class="fas fa-clock text-info me-2"></i>Heure :</span>
+                                            <span id="final-time" class="fw-semibold">--</span>
+                                        </li>
+                                        <li class="list-group-item bg-transparent px-0 d-flex justify-content-between align-items-center">
+                                            <span><i class="fas fa-map-marker-alt text-success me-2"></i>Mode :</span>
+                                            <span id="final-mode" class="fw-semibold">--</span>
+                                        </li>
+                                    </ul>
+                                    <div class="alert alert-success d-flex align-items-center mt-4 mb-2" role="alert" style="background: linear-gradient(90deg, #e0f2ff 0%, #fff7ed 100%); border: none;">
+                                        <i class="fas fa-envelope-open-text fa-lg me-3 text-primary"></i>
+                                        <div>
+                                            Un email de confirmation avec tous les détails vous a été envoyé.<br>
+                                            <span class="text-muted small">Pensez à vérifier vos spams.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-center mb-5 animate__animated animate__fadeInUp animate__delay-3s">
+                                    <a href="#" class="btn btn-primary" id="add-to-calendar">
+                                        <i class="fas fa-calendar-plus me-2"></i> Ajouter à mon agenda
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info mx-auto animate__animated animate__fadeIn animate__delay-4s" style="max-width: 600px;">
+                                    <h5 class="alert-heading"><i class="fas fa-clock me-2"></i> Prochaine étape</h5>
+                                    <p class="mb-0">Notre équipe vous contactera dans les 24h pour toute information complémentaire avant notre rendez-vous.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+        <!-- fin  Section -->
+
+        <!-- Footer Start -->
+   {% include 'web_site/footer.html' %}
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
+
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'web_site/lib/wow/wow.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/easing/easing.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/waypoints/waypoints.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/counterup/counterup.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/lightbox/js/lightbox.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+        <script src="{% static 'web_site/js/toastr.min.js' %}"></script>
+        <script src="{% static 'web_site/js/index.js' %}"></script>
+        <script src="{% static 'web_site/js/main.js' %}"></script>
+        <script>
+            // Soumission AJAX du formulaire de RDV
+            function submitBooking() {
+                // Récupération des valeurs du formulaire
+                var fullname = document.getElementById('fullname').value.trim();
+                var email = document.getElementById('email').value.trim();
+                var phone = document.getElementById('phone').value.trim();
+                var company = document.getElementById('company').value.trim();
+                var consent = document.getElementById('consent').checked ? 'on' : '';
+                var honeypot = ''; // champ anti-spam si besoin
+
+                // Récupération des infos du rdv (affichées dans la confirmation)
+                var service = document.getElementById('confirm-service').textContent.trim();
+                var date = document.getElementById('confirm-date').textContent.trim();
+                var time = document.getElementById('confirm-time').textContent.trim();
+                var duration = document.getElementById('confirm-duration').textContent.trim();
+                var mode = document.getElementById('confirm-mode').textContent.trim();
+                var infos = ""; // à adapter si vous stockez les infos complémentaires dans un champ
+                var files_count = document.getElementById('confirm-files').textContent.trim();
+
+                // Validation simple
+                if (!fullname || !email || !phone || !service || !date || !time || !duration || !mode || !consent) {
+                    toastr.error("Veuillez remplir tous les champs obligatoires.");
+                    return;
+                }
+
+                var data = new FormData();
+                data.append('fullname', fullname);
+                data.append('email', email);
+                data.append('phone', phone);
+                data.append('company', company);
+                data.append('service', service);
+                data.append('date', date);
+                data.append('time', time);
+                data.append('duration', duration);
+                data.append('mode', mode);
+                data.append('infos', infos);
+                data.append('files_count', files_count);
+                data.append('consent', consent);
+                data.append('honeypot', honeypot);
+
+                fetch("{% url 'rdv_ajax' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': (document.querySelector('[name=csrfmiddlewaretoken]')||{}).value || ''
+                    },
+                    body: data
+                })
+                .then(response => response.json())
+                .then(json => {
+                    if (json.success) {
+                        // Passe à l'étape de confirmation finale
+                        document.getElementById('step-3').classList.add('d-none');
+                        document.getElementById('step-confirmation').classList.remove('d-none');
+                        // Optionnel : lancer la confetti animation
+                        if (window.JSConfetti) {
+                            new JSConfetti().addConfetti();
+                        }
+                    } else {
+                        toastr.error(json.error || "Erreur lors de l'envoi.");
+                    }
+                })
+                .catch(() => {
+                    toastr.error("Erreur lors de l'envoi.");
+                });
+            }
+        </script>
+    </body>
+
+</html>

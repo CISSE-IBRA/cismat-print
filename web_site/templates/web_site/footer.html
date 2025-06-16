@@ -1,0 +1,56 @@
+ <!-- Footer Start -->
+    <footer style="background:rgb(28, 83, 128); color: #fff; padding: 50px 0 20px 0;">
+    <div class="container">
+        <div class="row gy-4">
+            <!-- Logo & Description -->
+            <div class="col-md-3">
+                <h4 class="mb-3" style="color:orange;"><i class="fas fa-print me-2"></i>Cismat Print</h4>
+                <p class="small mb-3">Impression premium pour tous vos besoins professionnels et créatifs.<br>
+                Qualité, rapidité et service exceptionnel garantis.</p>
+                <div class="d-flex">
+                    <a class="btn btn-outline-primary btn-sm rounded-circle me-2" href="https://web.facebook.com/profile.php?id=61559810581089"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-primary btn-sm rounded-circle me-2" href="#"><i class="fab fa-instagram"></i></a>
+                    <a class="btn btn-outline-primary btn-sm rounded-circle me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <!-- Liens rapides -->
+            <div class="col-md-3">
+                <h5 class="mb-3" style="color:orange;">Liens rapides</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'accueil' %}" class="text-white text-decoration-none">Accueil</a></li>
+                    <li><a href="{% url 'service' %}" class="text-white text-decoration-none">Nos réalisations</a></li>
+                    <li><a href="{% url 'contact' %}" class="text-white text-decoration-none">Contact</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">À propos</a></li>
+                </ul>
+            </div>
+            <!-- Horaires -->
+            <div class="col-md-3">
+                <h5 class="mb-3" style="color:orange;">Horaires d'ouverture</h5>
+                <ul class="list-unstyled small">
+                    <li>Lundi - Samedi : 8h - 17h</li>
+                    <li>Dimanche : Fermé</li>
+                </ul>
+                <h6 class="mt-3 mb-2" style="color:orange;">Actualités</h6>
+                <form>
+                    <div class="input-group input-group-sm">
+                        <input type="email" class="form-control" placeholder="Votre email" aria-label="Votre email">
+                        <button class="btn btn-primary" type="submit">OK</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Contact -->
+            <div class="col-md-3">
+                <h5 class="mb-3" style="color:orange;">Contact</h5>
+                <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Yopougon, Andokoi</p>
+                <p class="mb-1"><i class="fas fa-envelope me-2 text-primary"></i>cismatprint123@gmail.com</p>
+                <p class="mb-1"><i class="fa fa-phone-alt me-2 text-primary"></i>07-19-64-79-04</p>
+                <p class="mb-0"><i class="fab fa-firefox-browser me-2 text-primary"></i>cismatprint.ci</p>
+            </div>
+        </div>
+        <hr class="my-4" style="border-color: #333;">
+        <div class="text-center small" style="color: yellow;">
+            &copy; {{ now|date:"Y" }} Cismat Print. Tous droits réservés.
+        </div>
+    </div>
+    </footer>
+        <!-- Footer End -->

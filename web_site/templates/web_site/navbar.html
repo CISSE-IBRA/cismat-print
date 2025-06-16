@@ -1,0 +1,167 @@
+{% load static %}
+<!-- Topbar Start -->
+<div class="container-fluid topbar bg-light px-5 d-none d-lg-block">
+  <div class="row gx-0 align-items-center">
+    <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
+      <div class="d-flex flex-wrap">
+        <a href="#" class="text-muted small me-4"
+          ><i class="fas fa-map-marker-alt text-primary me-2"></i>Yopougon,
+          Andokoi</a
+        >
+        <a href="tel:+01234567890" class="text-muted small me-4"
+          ><i class="fas fa-phone-alt text-primary me-2"></i>07-19-64-79-04 /
+          07-59-10-60-03 / 07-89-86-56-42
+        </a>
+        <a href="mailto:example@gmail.com" class="text-muted small me-0"
+          ><i class="fas fa-envelope text-primary me-2"></i
+          >cismatprint123@gmail.com</a
+        >
+      </div>
+    </div>
+    <div class="col-lg-4 text-center text-lg-end">
+      <div class="d-inline-flex align-items-center" style="height: 50px">
+        <div class="dropdown">
+          <a
+            href="#"
+            class=" text-dark"
+            data-bs-toggle="dropdown"
+            ><small
+              ><i class="fa fa-home text-primary me-2"></i> Ouvert du Lundi au
+              Samedi : 8h-17h</small
+            ></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Topbar End -->
+<!-- Navbar Start -->
+<div
+  class="container-fluid position-relative p-0 {% if request.resolver_match.url_name != 'accueil' %} mb-5 {% endif %}"
+>
+  <nav
+    class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0 {% if request.resolver_match.url_name != 'accueil' %} bg-blue shadow {% endif %}"
+  >
+    <a href="{% url 'accueil' %}" class="navbar-brand p-0">
+      <h1 class="text-primary">
+        <i class="fas fa-magic me-3"></i>Cismat Print
+      </h1>
+      <!-- <img src="{% static 'web_site/img/logo.png' %}" alt="Logo"> -->
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarCollapse"
+    >
+      <span class="fa fa-bars"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <div class="navbar-nav ms-auto py-0">
+        <a
+          href="{% url 'accueil' %}"
+          class="nav-item nav-link {% if request.resolver_match.url_name == 'accueil' %}active{% endif %}"
+        >
+          Accueil
+        </a>
+
+        <div class="nav-item dropdown">
+          <a
+            href="#"
+            class="nav-link {% if request.resolver_match.url_name in 'grand_format petit_format autre_format' %}active{% endif %}"
+            data-bs-toggle="dropdown"
+          >
+            <span class="dropdown-toggle">Nos Services</span>
+          </a>
+          <div class="dropdown-menu mega-menu p-4" style="min-width: 700px;">
+            <div class="row">
+              
+              {% for key, value in NavNosServices.items %}
+              <!-- Colonne Grand Format -->
+              <div class="col-md-4">
+                <h6 class="mega-menu-title text-warning text-uppercase fw-bold" style="letter-spacing: 1px;">
+                  <i class="fas fa-expand-arrows-alt me-2"></i>{{ key }}
+                </h6>
+
+                <ul class="list-unstyled mega-menu-list">
+                  {% for item in value %}
+                  <li>
+                    <a
+                        href="{% url 'savoir_plus' id=item.id %}"
+                      class="dropdown-item "
+                      >{{ item.titre }}</a
+                    >
+                  </li>
+                  {% endfor %}
+
+
+                </ul>
+              </div>
+              {% endfor %}
+
+
+
+
+              <!-- Colonne d'aperçu d'image au survol -->
+              <div class="col-md-4 d-none d-lg-block mega-menu-img-preview">
+                <img
+                  src="/static/web_site/img/mega-menu-default.jpg"
+                  alt="Aperçu"
+                  class="img-fluid rounded shadow"
+                  id="megaMenuImgPreview"
+                  style="max-height: 180px; display: none;"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <a
+          href="{% url 'service' %}"
+          class="nav-item nav-link {% if request.resolver_match.url_name == 'service' %}active{% endif %}"
+          >Nos Réalisations</a
+        >
+        <a
+          href="{% url 'contact' %}"
+          class="nav-item nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+          >Nous Contacter</a
+        >
+      </div>
+      <a
+        href="rdv.html"
+        class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0 animate__animated animate__pulse animate__faster"
+        id="btn-rdv"
+      >
+        <i class="fas fa-calendar-check me-2"></i>Prendre Rendez-Vous
+      </a>
+      <!-- Bouton Panier -->
+      {% comment %} <a href="#" class="nav-link position-relative ms-2 animate__animated animate__bounceIn" id="btn-panier" style="font-size: 1.2em;">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.7em;">0</span>
+      </a> {% endcomment %}
+      <!-- Button d'inscription -->
+      {% comment %} <div class="nav-item dropdown position-relative ms-1 animate__animated animate__bounceIn" id="btn-inscription" style="font-size: 1.2em;">
+        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="" aria-expanded="false">
+          <i class="fas fa-user-plus"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 180px;">
+
+          <li>
+        <a href="#">
+          <i class="fas fa-sign-in-alt me-2"></i>Connexion
+        </a>
+          </li>
+          <li>
+        <a href="#">
+          <i class="fas fa-user-edit me-2"></i>Créer un compte
+        </a>
+          </li>
+        </ul>
+      </div> {% endcomment %}
+    </div>
+  </nav>
+</div>
+
+ <!-- Template Javascript -->
+<script src="{% static 'web_site/js/main.js' %}"></script>
+

@@ -1,0 +1,940 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{{ service.titre }} - Modèles disponibles</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'web_site/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'web_site/css/style.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <style>
+        body {
+            background: linear-gradient(120deg, #e0e7ff 0%, #f5f7fa 100%);
+            font-family: 'Inter', Arial, sans-serif;
+        }
+        .back-btn {
+            position: absolute;
+            left: 2rem;
+            top: 2rem;
+            z-index: 10;
+        }
+        @media (max-width: 767px) {
+            .back-btn {
+                position: static;
+                margin-bottom: 1.5rem;
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
+        }
+        .model-card {
+            border-radius: 1.2rem;
+            box-shadow: 0 2px 16px rgba(80,111,255,0.10);
+            transition: transform 0.18s, box-shadow 0.18s;
+            background: #fff;
+            border: 1.5px solid #e0e7ff;
+            overflow: hidden;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+        .model-card:hover {
+            transform: translateY(-6px) scale(1.025);
+            box-shadow: 0 8px 32px rgba(80,111,255,0.15);
+            border-color: #506fff;
+        }
+        .model-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #f5f7fa;
+        }
+        .badge-unite {
+            background: #e0f2ff;
+            color: #506fff;
+            font-size: 0.95em;
+        }
+        .badge-prix {
+            background: #506fff;
+            color: #fff;
+            font-size: 1.1em;
+            padding: 0.6em 1.1em;
+            border-radius: 1.5em;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(80,111,255,0.08);
+        }
+        .badge-dispo {
+            font-size: 0.95em;
+            padding: 0.4em 1em;
+            border-radius: 1em;
+        }
+        .model-card .card-footer {
+            background: none;
+            border: none;
+            margin-top: auto;
+        }
+        .model-card .fa-check-circle { color: #28a745; }
+        .model-card .fa-times-circle { color: #dc3545; }
+        .model-card .fa-ruler-combined { color: #506fff; }
+        .model-card .fa-cogs { color: #00b8d9; }
+        .model-card .fa-file-alt { color: #ff8800; }
+        .model-card .fa-info-circle { color: #888; }
+        .commander-btn {
+            opacity: 0.92;
+            transition: opacity 0.2s, transform 0.2s;
+            font-weight: 500;
+            padding: 0.5em 1.3em;
+        }
+        .model-card:hover .commander-btn,
+        .model-card:focus-within .commander-btn {
+            opacity: 1;
+            transform: scale(1.07);
+        }
+        @media (max-width: 767px) {
+            .commander-btn {
+                left: 50%;
+                right: auto;
+                bottom: 12px;
+                transform: translateX(-50%);
+                width: 85%;
+                text-align: center;
+                font-size: 1em;
+            }
+        }
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220,53,69,.15);
+        }
+        /* Hero section styles */
+        .custom-hero-section {
+            min-height: 220px;
+            padding: 2.5rem 1rem 2rem 1rem;
+            margin-bottom: 1.5rem;
+            overflow: visible;
+        }
+        .hero-bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.5;
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .hero-bg-shape-1 {
+            width: 120px; height: 120px;
+            top: -40px; left: -60px;
+            background: radial-gradient(circle at 30% 30%, #ffb347 70%, transparent 100%);
+            animation: heroMove1 7s infinite alternate;
+        }
+        .hero-bg-shape-2 {
+            width: 90px; height: 90px;
+            top: 10px; right: -40px;
+            background: radial-gradient(circle at 60% 60%, #506fff 70%, transparent 100%);
+            animation: heroMove2 6s infinite alternate;
+        }
+        .hero-bg-shape-3 {
+            width: 60px; height: 60px;
+            bottom: -30px; left: 18%;
+            background: radial-gradient(circle at 50% 50%, #ffb347 70%, transparent 100%);
+            animation: heroMove3 8s infinite alternate;
+        }
+        .hero-bg-shape-4 {
+            width: 80px; height: 80px;
+            bottom: -40px; right: 10%;
+            background: radial-gradient(circle at 50% 50%, #506fff 70%, transparent 100%);
+            animation: heroMove4 9s infinite alternate;
+        }
+        @keyframes heroMove1 {
+            0% { transform: translateY(0) scale(1);}
+            100% { transform: translateY(18px) scale(1.09);}
+        }
+        @keyframes heroMove2 {
+            0% { transform: translateY(0) scale(1);}
+            100% { transform: translateY(-14px) scale(1.13);}
+        }
+        @keyframes heroMove3 {
+            0% { transform: translateX(0) scale(1);}
+            100% { transform: translateX(18px) scale(1.08);}
+        }
+        @keyframes heroMove4 {
+            0% { transform: translateY(0) scale(1);}
+            100% { transform: translateY(16px) scale(1.11);}
+        }
+        @media (max-width: 991px) {
+            .custom-hero-section { min-height: 180px; padding: 1.5rem 0.5rem 1.5rem 0.5rem; }
+            .hero-bg-shape-1 { width: 80px; height: 80px; top: -25px; left: -30px;}
+            .hero-bg-shape-2 { width: 60px; height: 60px; top: 5px; right: -20px;}
+            .hero-bg-shape-3 { width: 40px; height: 40px; bottom: -15px; left: 10%;}
+            .hero-bg-shape-4 { width: 50px; height: 50px; bottom: -20px; right: 5%;}
+            .display-5 { font-size: 2rem;}
+            .fs-5 { font-size: 1rem;}
+        }
+        @media (max-width: 575px) {
+            .custom-hero-section { min-height: 120px; padding: 1rem 0.2rem 1rem 0.2rem; }
+            .hero-bg-shape-1, .hero-bg-shape-2, .hero-bg-shape-3, .hero-bg-shape-4 { opacity: 0.35; }
+            .display-5 { font-size: 1.3rem;}
+            .fs-5 { font-size: 0.95rem;}
+        }
+        /* Modal styles */
+        .commande-step { display: none; }
+        .commande-step:not(.d-none) { display: block; }
+        .modal-content { border-radius: 1.5rem; border: none; }
+        .modal-header.bg-gradient-primary {
+            color: #fff;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+        }
+        @media (max-width: 575px) {
+            .modal-content { border-radius: 1em; }
+            .modal-header.bg-gradient-primary { border-top-left-radius: 1em; border-top-right-radius: 1em; }
+        }
+        /* Form input styles */
+        .input-group-lg .input-group-text {
+            font-size: 1.25rem;
+            background: #f5f7fa;
+            border-right: 0;
+        }
+        .custom-focus:focus {
+            border-color: #506fff !important;
+            box-shadow: 0 0 0 0.15rem rgba(80,111,255,0.15);
+            background: #f0f6ff;
+        }
+        .form-control.custom-focus {
+            transition: box-shadow 0.18s, border-color 0.18s, background 0.18s;
+        }
+        .input-group .form-control {
+            border-left: 0;
+        }
+        .input-group .form-control,
+        .input-group .input-group-text {
+            border-radius: 2em !important;
+        }
+        .input-group.input-group-lg {
+            box-shadow: 0 2px 8px rgba(80,111,255,0.07);
+            transition: box-shadow 0.18s;
+        }
+        .input-group.input-group-lg:focus-within {
+            box-shadow: 0 4px 16px rgba(80,111,255,0.13);
+        }
+    </style>
+</head>
+<body>
+    {% include 'web_site/navbar.html' %}
+
+    <div class="container py-5 position-relative">
+        <br><br>
+        {% if request.GET.from == 'index' %}
+        <div class="container mb-3">
+          <a href="/" class="btn btn-outline-primary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i> Retour à l'accueil
+          </a>
+        </div>
+        {% endif %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10 mx-auto text-center position-relative custom-hero-section">
+                <div class="hero-bg-shape hero-bg-shape-1"></div>
+                <div class="hero-bg-shape hero-bg-shape-2"></div>
+                <div class="hero-bg-shape hero-bg-shape-3"></div>
+                <div class="hero-bg-shape hero-bg-shape-4"></div>
+                <div class="position-relative" style="z-index:2;">
+                    <h2 class="mb-3 text-primary fw-bold display-5">{{ service.titre }}</h2>
+                    <p class="text-muted mb-0 fs-5">{{ service.description }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mt-2">
+            {% for model in models %}
+            <div class="col-md-6 col-lg-4 d-flex">
+                <div class="model-card shadow-sm animate__animated animate__fadeInUp w-100 position-relative"
+                     data-format="{{ model.format }}"
+                     data-paper="{{ model.unite_mesure }}"
+                     data-finition="{{ model.finition }}">
+                    <div class="position-relative">
+                        {% if model.image %}
+                            <img src="{{ model.image.url }}" alt="{{ model.nom }}" class="model-img">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x180?text=ImprimePro" alt="Aperçu" class="model-img">
+                        {% endif %}
+                        {% if model.disponible %}
+                            <a href="{% url 'rdv' %}?model_id={{ model.id }}"
+                               class="btn btn-primary btn-sm commander-btn position-absolute"
+                               style="bottom: 16px; right: 16px; z-index:2; border-radius:2em; box-shadow:0 2px 8px rgba(80,111,255,0.13); opacity:0.92; transition:opacity 0.2s;"
+                               data-bs-toggle="modal" data-bs-target="#commandeModal"
+                               data-model="{{ model.nom }}"
+                               data-format="{{ model.format }}"
+                               data-paper="{{ model.unite_mesure }}"
+                               data-finition="{{ model.finition }}">
+                                <i class="fas fa-shopping-cart me-1"></i> Commander
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary btn-sm commander-btn position-absolute"
+                                    style="bottom: 16px; right: 16px; z-index:2; border-radius:2em; opacity:0.7;" disabled>
+                                <i class="fas fa-shopping-cart me-1"></i> Commander
+                            </button>
+                        {% endif %}
+                    </div>
+                    <div class="p-4 d-flex flex-column h-100">
+                        <h5 class="fw-bold mb-2"><i class="fas fa-file-alt me-2"></i>{{ model.nom }}</h5>
+                        <p class="text-muted small mb-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <span class="model-desc-short">{{ model.description|truncatewords:20 }}</span>
+                            {% if model.description|length > 120 %}
+                                <span class="model-desc-rest d-none">{{ model.description|slice:"120:" }}</span>
+                                <a href="#" class="see-more-link ms-1" onclick="toggleDesc(this); return false;">Voir plus</a>
+                            {% endif %}
+                        </p>
+                        <div class="mb-2">
+                            <span class="badge badge-unite me-2"><i class="fas fa-ruler-combined me-1"></i> {{ model.unite_mesure }}</span>
+                            {% if model.specifications_techniques %}
+                                <span class="badge bg-light text-secondary"><i class="fas fa-cogs me-1"></i> {{ model.specifications_techniques|truncatewords:6 }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mt-auto gap-2 flex-wrap">
+                            <span class="badge badge-prix mb-2 mb-md-0">
+                                <i class="fas fa-tag me-1"></i> {{ model.prix_unitaire|floatformat:2 }} FCFA
+                            </span>
+                            {% if model.disponible %}
+                                <span class="badge bg-success badge-dispo mb-2 mb-md-0">
+                                    <i class="fas fa-check-circle"></i> Disponible
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger badge-dispo mb-2 mb-md-0">
+                                    <i class="fas fa-times-circle"></i> Indisponible
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center text-muted py-5">
+                <i class="fas fa-box-open fa-3x mb-3"></i><br>
+                Aucun modèle disponible pour ce service pour le moment.
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row mt-5">
+            <div class="col-12 d-flex justify-content-center">
+                <a href="{% url 'all_service' %}" class="btn btn-lg px-4 py-3 fw-semibold shadow-sm border-0"
+                   style="background: linear-gradient(90deg, #506fff 0%, #ffb347 100%); color: #fff; border-radius: 2em; transition: background 0.2s, transform 0.18s;"
+                   onmouseover="this.style.background='linear-gradient(90deg, #ffb347 0%, #506fff 100%)'; this.style.transform='scale(1.04)';"
+                   onmouseout="this.style.background='linear-gradient(90deg, #506fff 0%, #ffb347 100%)'; this.style.transform='scale(1)';">
+                    <i class="fas fa-arrow-left me-2"></i> Retour aux services
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% include 'web_site/footer.html' %}
+
+    <a href="#" class="btn btn-primary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'web_site/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/lightbox/js/lightbox.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'web_site/js/main.js' %}"></script>
+    <script>
+    // Animation des formes de fond au scroll
+    document.addEventListener('scroll', function() {
+        var shapes = document.querySelectorAll('.hero-bg-shape');
+        var scrollY = window.scrollY || window.pageYOffset;
+        shapes.forEach(function(shape) {
+            shape.style.opacity = Math.max(0.2, 0.5 - scrollY/600);
+        });
+    });
+
+    // Voir plus/moins description
+    function toggleDesc(link) {
+        var rest = link.parentElement.querySelector('.model-desc-rest');
+        if (!rest) return;
+        if (rest.classList.contains('d-none')) {
+            rest.classList.remove('d-none');
+            link.textContent = 'Voir moins';
+        } else {
+            rest.classList.add('d-none');
+            link.textContent = 'Voir plus';
+        }
+    }
+
+    // Mets à jour le récapitulatif à chaque fois qu'on arrive à l'étape 3
+    const oldNextStep = window.nextStep;
+    window.nextStep = function(n) {
+      oldNextStep(n);
+      if (n === 3) remplirRecapitulatif();
+    }
+
+    function remplirRecapitulatif() {
+      document.getElementById('recapNom').textContent = document.getElementById('clientName').value || '';
+      document.getElementById('recapTel').textContent = document.getElementById('clientPhone').value || '';
+      document.getElementById('recapEmail').textContent = document.getElementById('clientEmail').value || '';
+      document.getElementById('recapAdresse').textContent = document.getElementById('deliveryPlace').value || '';
+      document.getElementById('recapModele').textContent = document.getElementById('selectedService').value || '';
+      document.getElementById('recapQuantite').textContent = document.getElementById('quantity').value || '';
+      // Ajout dynamique des options personnalisées
+      let recapList = document.querySelector('#step-3 ul');
+      if (!recapList) return;
+      // Supprime les anciens champs dynamiques
+      recapList.querySelectorAll('.recap-dyn').forEach(e => e.remove());
+      // Ajoute les champs dynamiques saisis à l'étape 2
+      document.querySelectorAll('#dynamicOptions [name]').forEach(function(input) {
+        let label = input.name;
+        let value = '';
+        if (input.type === 'checkbox') {
+          let checked = document.querySelectorAll('#dynamicOptions input[name="' + label + '"]:checked');
+          value = Array.from(checked).map(e => e.value).join(', ');
+          if (!value) return;
+        } else if (input.type === 'radio') {
+          let checked = document.querySelector('#dynamicOptions input[name="' + label + '"]:checked');
+          value = checked ? checked.value : '';
+          if (!value) return;
+        } else {
+          value = input.value;
+          if (!value) return;
+        }
+        let li = document.createElement('li');
+        li.className = 'recap-dyn';
+        li.innerHTML = '<b>' + label + ' :</b> ' + value;
+        recapList.appendChild(li);
+      });
+    }
+
+    // Mets à jour le récapitulatif à chaque fois qu'on arrive à l'étape 3
+    const oldNextStep = window.nextStep;
+    window.nextStep = function(n) {
+    console.log('Étape actuelle :', n);
+    remplirRecapitulatif();
+      oldNextStep(n);
+      if (n === 3) {
+        remplirRecapitulatif(),
+        console.log('Récapitulatif mis à jour', document.getElementById('clientName').value);
+};
+}
+    </script>
+
+    <!-- Modal Commande Multi-étapes -->
+    <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+          <div class="modal-header bg-gradient-primary text-white rounded-top-4" style="background: linear-gradient(90deg, #506fff 0%, #ffb347 100%);">
+            <h5 class="modal-title fw-bold" id="commandeModalLabel">
+              <i class="fas fa-shopping-cart me-2"></i>Commander un service d'impression
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body px-4 py-3">
+            <form id="commandeForm" enctype="multipart/form-data">
+              <!-- ÉTAPE 1 : Infos client -->
+              <div class="commande-step" id="step-1">
+                <h6 class="fw-bold mb-3 text-primary">1. Informations client</h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                      <label class="form-label">Nom complet <span class="text-danger">*</span></label>
+                      <div class="input-group input-group-lg position-relative">
+                          <span class="input-group-text bg-white border-0 rounded-start-pill" style="color:#506fff;">
+                              <i class="fas fa-user"></i>
+                          </span>
+                          <input type="text" class="form-control rounded-end-pill custom-focus" id="clientName" name="clientName" required placeholder="Votre nom complet">
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label class="form-label">Téléphone <span class="text-danger">*</span></label>
+                      <div class="input-group input-group-lg position-relative">
+                          <span class="input-group-text bg-white border-0 rounded-start-pill" style="color:#ffb347;">
+                              <i class="fas fa-phone"></i>
+                          </span>
+                          <input type="tel" class="form-control rounded-end-pill custom-focus" id="clientPhone" name="clientPhone" required placeholder="Ex: 0700000000">
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label class="form-label">Adresse de livraison <span class="text-danger">*</span></label>
+                      <div class="input-group input-group-lg position-relative">
+                          <span class="input-group-text bg-white border-0 rounded-start-pill" style="color:#28a745;">
+                              <i class="fas fa-map-marker-alt"></i>
+                          </span>
+                          <input type="text" class="form-control rounded-end-pill custom-focus" id="deliveryPlace" name="deliveryPlace" placeholder="Ex: Abidjan, Yopougon, etc." required>
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label class="form-label">Email <span class="text-danger">*</span></label>
+                      <div class="input-group input-group-lg position-relative">
+                          <span class="input-group-text bg-white border-0 rounded-start-pill" style="color:#506fff;">
+                              <i class="fas fa-envelope"></i>
+                          </span>
+                          <input type="email" class="form-control rounded-end-pill custom-focus" id="clientEmail" name="clientEmail" required placeholder="Votre email">
+                      </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end mt-4">
+                  <button type="button" class="btn btn-primary rounded-pill px-4" onclick="validateStep(1)">Suivant</button>
+                </div>
+              </div>
+              <!-- ÉTAPE 2 : Détails de la commande -->
+              <div class="commande-step d-none" id="step-2">
+                <h6 class="fw-bold mb-3 text-primary">2. Détails de la commande</h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Modèle sélectionné</label>
+                    <input type="text" class="form-control rounded-pill bg-light" id="selectedService" name="selectedService" readonly>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Quantité <span class="text-danger">*</span></label>
+                    <input type="number" min="1" class="form-control rounded-pill" id="quantity" name="quantity" required>
+                  </div>
+                  <!-- Champs dynamiques -->
+                  <div id="dynamicOptions"></div>
+                  <!-- Zone d'infos dynamiques sur le modèle choisi -->
+                  <div class="col-12" id="modelDetails" style="display:none;">
+                    <div class="alert alert-info py-2 px-3 mb-0 small" id="modelDetailsContent"></div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                  <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="prevStep(1)">Précédent</button>
+                  <button type="button" class="btn btn-primary rounded-pill px-4" onclick="validateStep(2)">Suivant</button>
+                </div>
+              </div>
+              <!-- ÉTAPE 3 : Paiement & Validation -->
+              <div class="commande-step d-none" id="step-3">
+                <h6 class="fw-bold mb-3 text-primary">3. Paiement & Validation</h6>
+               
+                <div class="mb-3">
+                  <label class="form-label">Moyen de paiement préféré <span class="text-danger">*</span></label>
+                  <select class="form-select rounded-pill" id="paymentMethod" name="paymentMethod" required>
+                    <option value="" selected disabled>Choisissez un moyen de paiement</option>
+                    <option value="Orange Money">Orange Money</option>
+                    <option value="MTN Mobile Money">MTN Mobile Money</option>
+                    <option value="Moov Money">Moov Money</option>
+                    <option value="Wave">Wave</option>
+                    <option value="Espèces">Espèces à la livraison</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Commentaires supplémentaires</label>
+                  <textarea class="form-control rounded-3" id="commentaires" name="commentaires" rows="2"></textarea>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                  <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="prevStep(2)">Précédent</button>
+                  <button type="submit" class="btn btn-success rounded-pill px-4" id="envoyerCommande">
+                    <i class="fas fa-paper-plane me-1"></i> Envoyer
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    // Animation focus JS (optionnel, pour effet supplémentaire)
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.custom-focus').forEach(function(input) {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('shadow-lg');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('shadow-lg');
+            });
+        });
+    });
+
+    // Stockage des données modèles et options dynamiques
+    window.modelsData = {};
+    window.modelsDetails = {};
+    {% for model in models %}
+      window.modelsData["{{ model.nom|escapejs }}"] = {
+        description: "{{ model.description|escapejs }}",
+        format: "{{ model.format|escapejs }}",
+        unite_mesure: "{{ model.unite_mesure|escapejs }}",
+        finition: "{{ model.finition|escapejs }}",
+        specifications: "{{ model.specifications_techniques|default_if_none:''|escapejs }}",
+        prix: "{{ model.prix_unitaire|floatformat:2 }}",
+        disponible: {{ model.disponible|yesno:"true,false" }},
+      };
+      window.modelsDetails["{{ model.nom|escapejs }}"] = [
+        {% for detail in model.details.all %}
+          {
+            nom_option: "{{ detail.nom_option|escapejs }}",
+            type_option: "{{ detail.type_option }}",
+            valeurs_possibles: {{ detail.valeurs_possibles|default:"null"|safe }},
+            obligatoire: {{ detail.obligatoire|yesno:"true,false" }},
+          },
+        {% endfor %}
+      ];
+    {% endfor %}
+
+    // Navigation étapes
+    function nextStep(n) {
+        console.log('Next step:', n);
+      document.querySelectorAll('.commande-step').forEach(s => s.classList.add('d-none'));
+      document.getElementById('step-' + n).classList.remove('d-none');
+      if (n === 2) {
+        updateModelFields();
+        updateDynamicOptions();
+        updateModelDetails();
+      }
+      if (n === 3) remplirRecapitulatif();
+    }
+    function prevStep(n) {
+      document.querySelectorAll('.commande-step').forEach(s => s.classList.add('d-none'));
+      document.getElementById('step-' + n).classList.remove('d-none');
+    }
+
+    // Affiche un message d'erreur sous le formulaire
+    function showError(msg) {
+        let errorDiv = document.getElementById('commandeError');
+        if (!errorDiv) {
+            errorDiv = document.createElement('div');
+            errorDiv.id = 'commandeError';
+            errorDiv.className = 'alert alert-danger py-2 px-3 mt-3 mb-0 small';
+            document.getElementById('commandeForm').prepend(errorDiv);
+        }
+        errorDiv.textContent = msg;
+        errorDiv.style.display = 'block';
+        setTimeout(() => { errorDiv.style.display = 'none'; }, 3500);
+    }
+
+    // Met à jour les champs format/papier/finition selon le modèle
+    function updateModelFields() {
+      var selected = document.getElementById('selectedService').value;
+      var m = window.modelsData[selected];
+      if (m) {
+        if (document.getElementById('format')) document.getElementById('format').value = m.format || '';
+        if (document.getElementById('paperType')) document.getElementById('paperType').value = m.unite_mesure || '';
+        if (document.getElementById('finish')) document.getElementById('finish').value = m.finition || '';
+      }
+    }
+
+    // Affiche les détails du modèle à l'étape 2
+    function updateModelDetails() {
+      var selected = document.getElementById('selectedService').value;
+      var detailsDiv = document.getElementById('modelDetails');
+      var contentDiv = document.getElementById('modelDetailsContent');
+      var m = window.modelsData[selected];
+      if (m) {
+        contentDiv.innerHTML =
+          "<b>Description :</b> " + m.description + "<br>" +
+          "<b>Format :</b> " + m.format + " &nbsp; <b>Unité :</b> " + m.unite_mesure + "<br>" +
+          "<b>Finition :</b> " + m.finition + "<br>" +
+          (m.specifications ? "<b>Spécifications :</b> " + m.specifications + "<br>" : "") +
+          "<b>Prix unitaire :</b> " + m.prix + " FCFA<br>" +
+          "<b>Disponibilité :</b> " + (m.disponible ? "Oui" : "Non");
+        detailsDiv.style.display = "block";
+      } else {
+        detailsDiv.style.display = "none";
+      }
+    }
+
+    // Génère dynamiquement les champs selon le modèle sélectionné
+    function updateDynamicOptions() {
+      var selected = document.getElementById('selectedService').value;
+      var options = window.modelsDetails[selected] || [];
+      var container = document.getElementById('dynamicOptions');
+      container.innerHTML = '';
+      options.forEach(function(opt, idx) {
+        var col = document.createElement('div');
+        col.className = "col-md-6";
+        var label = document.createElement('label');
+        label.className = "form-label";
+        label.innerHTML = opt.nom_option + (opt.obligatoire ? ' <span class="text-danger">*</span>' : '');
+        col.appendChild(label);
+
+        var input;
+        if (opt.type_option === "SELECT" && opt.valeurs_possibles && opt.valeurs_possibles.options) {
+          input = document.createElement('select');
+          input.className = "form-select rounded-pill";
+          input.id = "option_" + idx;
+          input.name = opt.nom_option;
+          var def = document.createElement('option');
+          def.value = "";
+          def.textContent = "Choisir";
+          input.appendChild(def);
+          opt.valeurs_possibles.options.forEach(function(val) {
+            var o = document.createElement('option');
+            o.value = val;
+            o.textContent = val;
+            input.appendChild(o);
+          });
+        } else if (opt.type_option === "CHECKBOX" && opt.valeurs_possibles && opt.valeurs_possibles.options) {
+          input = document.createElement('div');
+          opt.valeurs_possibles.options.forEach(function(val, i) {
+            var div = document.createElement('div');
+            div.className = "form-check";
+            var cb = document.createElement('input');
+            cb.type = "checkbox";
+            cb.className = "form-check-input";
+            cb.id = "option_" + idx + "_" + i;
+            cb.name = opt.nom_option;
+            cb.value = val;
+            var lbl = document.createElement('label');
+            lbl.className = "form-check-label";
+            lbl.htmlFor = cb.id;
+            lbl.textContent = val;
+            div.appendChild(cb);
+            div.appendChild(lbl);
+            input.appendChild(div);
+          });
+        } else if (opt.type_option === "RADIO" && opt.valeurs_possibles && opt.valeurs_possibles.options) {
+          input = document.createElement('div');
+          opt.valeurs_possibles.options.forEach(function(val, i) {
+            var div = document.createElement('div');
+            div.className = "form-check";
+            var rb = document.createElement('input');
+            rb.type = "radio";
+            rb.className = "form-check-input";
+            rb.id = "option_" + idx + "_" + i;
+            rb.name = opt.nom_option;
+            rb.value = val;
+            var lbl = document.createElement('label');
+            lbl.className = "form-check-label";
+            lbl.htmlFor = rb.id;
+            lbl.textContent = val;
+            div.appendChild(rb);
+            div.appendChild(lbl);
+            input.appendChild(div);
+          });
+        } else if (opt.type_option === "NUMBER") {
+          input = document.createElement('input');
+          input.type = "number";
+          input.className = "form-control rounded-pill";
+          input.id = "option_" + idx;
+          input.name = opt.nom_option;
+        } else {
+          // TEXT ou inconnu
+          input = document.createElement('input');
+          input.type = "text";
+          input.className = "form-control rounded-pill";
+          input.id = "option_" + idx;
+          input.name = opt.nom_option;
+        }
+        if (opt.obligatoire) input.required = true;
+        col.appendChild(input);
+        container.appendChild(col);
+      });
+    }
+
+    // Validation des étapes
+    function validateStep(step) {
+        let valid = true;
+        let msg = "";
+        if (step === 1) {
+            // Validation avancée des champs
+            let nameEl = document.getElementById('clientName');
+            let telEl = document.getElementById('clientPhone');
+            let emailEl = document.getElementById('clientEmail');
+            let addrEl = document.getElementById('deliveryPlace');
+            // Nom : non vide
+            if (!nameEl.value.trim()) {
+                nameEl.classList.add('is-invalid');
+                valid = false;
+            } else {
+                nameEl.classList.remove('is-invalid');
+            }
+            // Téléphone : 10 chiffres
+            let telVal = telEl.value.trim();
+            if (!/^\d{10}$/.test(telVal)) {
+                telEl.classList.add('is-invalid');
+                valid = false;
+                msg = "Le numéro de téléphone doit comporter exactement 10 chiffres.";
+            } else {
+                telEl.classList.remove('is-invalid');
+            }
+            // Email : regex
+            let emailVal = emailEl.value.trim();
+            let emailRegex = /^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(emailVal)) {
+                emailEl.classList.add('is-invalid');
+                valid = false;
+                msg = "Veuillez saisir une adresse email valide.";
+            } else {
+                emailEl.classList.remove('is-invalid');
+            }
+            // Adresse : non vide
+            if (!addrEl.value.trim()) {
+                addrEl.classList.add('is-invalid');
+                valid = false;
+            } else {
+                addrEl.classList.remove('is-invalid');
+            }
+            if (!valid && !msg) msg = "Veuillez remplir tous les champs obligatoires de l'étape 1.";
+            if (valid) nextStep(2);
+        }
+        if (step === 2) {
+            if (!document.getElementById('quantity').value.trim()) {
+                document.getElementById('quantity').classList.add('is-invalid');
+                valid = false;
+            } else {
+                document.getElementById('quantity').classList.remove('is-invalid');
+            }
+            // Validation des options dynamiques obligatoires
+            document.querySelectorAll('#dynamicOptions > div').forEach(function(col) {
+                let input = col.querySelector('[required]');
+                if (!input) return;
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    // Vérifie si au moins une case est cochée pour ce nom
+                    let name = input.name;
+                    let checked = col.querySelectorAll('input[name="' + name + '"]:checked').length > 0;
+                    if (!checked) {
+                        col.querySelectorAll('input[name="' + name + '"]').forEach(e => e.classList.add('is-invalid'));
+                        valid = false;
+                    } else {
+                        col.querySelectorAll('input[name="' + name + '"]').forEach(e => e.classList.remove('is-invalid'));
+                    }
+                } else {
+                    if (!input.value) {
+                        input.classList.add('is-invalid');
+                        valid = false;
+                    } else {
+                        input.classList.remove('is-invalid');
+                    }
+                }
+            });
+            if (!valid) msg = "Veuillez remplir tous les champs obligatoires de l'étape 2.";
+            if (valid) nextStep(3);
+        }
+        if (step === 3) {
+            nextStep(4);
+        }
+        if (!valid && msg) showError(msg);
+    }
+
+    // Gestion ouverture du modal
+    document.addEventListener('DOMContentLoaded', function() {
+        var commandeModal = document.getElementById('commandeModal');
+        commandeModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var modelName = button ? button.getAttribute('data-model') : '';
+            var format = button ? button.getAttribute('data-format') : '';
+            var paper = button ? button.getAttribute('data-paper') : '';
+            var finition = button ? button.getAttribute('data-finition') : '';
+            document.getElementById('commandeForm').reset();
+            document.getElementById('selectedService').value = modelName;
+            // Champs format/papier/finition si présents
+            if (document.getElementById('format')) document.getElementById('format').value = format || '';
+            if (document.getElementById('paperType')) document.getElementById('paperType').value = paper || '';
+            if (document.getElementById('finish')) document.getElementById('finish').value = finition || '';
+            document.querySelectorAll('.is-invalid').forEach(e => e.classList.remove('is-invalid'));
+            let errorDiv = document.getElementById('commandeError');
+            if (errorDiv) errorDiv.style.display = 'none';
+            nextStep(1);
+        });
+
+        // WhatsApp
+        document.getElementById('sendWhatsapp').onclick = function() {
+            var nom = document.getElementById('clientName').value;
+            var tel = document.getElementById('clientPhone').value;
+            var email = document.getElementById('clientEmail').value;
+            var lieu = document.getElementById('deliveryPlace').value;
+            var service = document.getElementById('selectedService').value;
+            var quantite = document.getElementById('quantity').value;
+            var format = document.getElementById('format') ? document.getElementById('format').value : '';
+            var papier = document.getElementById('paperType') ? document.getElementById('paperType').value : '';
+            var finition = document.getElementById('finish') ? document.getElementById('finish').value : '';
+            var dateLiv = document.getElementById('deliveryDate').value;
+            var msg = document.getElementById('clientMsg').value;
+            var paiement = document.getElementById('paymentMethod').value;
+            var commentaires = document.getElementById('commentaires').value;
+            var text = `Bonjour, je souhaite commander : ${service}%0ANom : ${nom}%0ATéléphone : ${tel}%0AEmail : ${email}%0AAdresse de livraison : ${lieu}%0AQuantité : ${quantite}%0AFormat : ${format}%0APapier : ${papier}%0AFinition : ${finition}%0ADate livraison : ${dateLiv}%0AInstructions : ${msg}%0AMoyen de paiement : ${paiement}%0ACommentaires : ${commentaires}`;
+            var whatsappNumber = '2250700000000'; // Remplace par ton numéro WhatsApp
+            window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
+        };
+
+        // Email
+        document.getElementById('sendMail').onclick = function() {
+            var nom = document.getElementById('clientName').value;
+            var tel = document.getElementById('clientPhone').value;
+            var email = document.getElementById('clientEmail').value;
+            var lieu = document.getElementById('deliveryPlace').value;
+            var service = document.getElementById('selectedService').value;
+            var quantite = document.getElementById('quantity').value;
+            var format = document.getElementById('format') ? document.getElementById('format').value : '';
+            var papier = document.getElementById('paperType') ? document.getElementById('paperType').value : '';
+            var finition = document.getElementById('finish') ? document.getElementById('finish').value : '';
+            var dateLiv = document.getElementById('deliveryDate').value;
+            var msg = document.getElementById('clientMsg').value;
+            var paiement = document.getElementById('paymentMethod').value;
+            var commentaires = document.getElementById('commentaires').value;
+            var subject = encodeURIComponent('Commande ImprimePro : ' + service);
+            var body = encodeURIComponent(
+                `Bonjour,\nJe souhaite commander : ${service}\nNom : ${nom}\nTéléphone : ${tel}\nEmail : ${email}\nAdresse de livraison : ${lieu}\nQuantité : ${quantite}\nFormat : ${format}\nPapier : ${papier}\nFinition : ${finition}\nDate livraison : ${dateLiv}\nInstructions : ${msg}\nMoyen de paiement : ${paiement}\nCommentaires : ${commentaires}`
+            );
+            window.location.href = `mailto:cismatprint123@email.com?subject=${subject}&body=${body}`;
+        };
+    });
+
+    // Soumission AJAX du formulaire de commande
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('commandeForm');
+    //Log Form
+    console.log('Formulaire de commande chargé', form);
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Validation simple
+        let valid = true;
+        ['clientName', 'clientPhone', 'clientEmail', 'deliveryPlace', 'selectedService', 'quantity', 'paymentMethod'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el && !el.value.trim()) {
+                el.classList.add('is-invalid');
+                valid = false;
+            } else if (el) {
+                el.classList.remove('is-invalid');
+            }
+        });
+        if (!valid) {
+            showError("Veuillez remplir tous les champs obligatoires.");
+            return;
+        }
+        var data = new FormData(form);
+        // Ajoute les champs dynamiques (options personnalisées)
+        document.querySelectorAll('#dynamicOptions [name]').forEach(function(input) {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                if (input.checked) data.append(input.name, input.value);
+            } else {
+                data.append(input.name, input.value);
+            }
+        });
+        fetch("{% url 'commande_ajax' %}", {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': (document.querySelector('[name=csrfmiddlewaretoken]')||{}).value || ''
+            },
+            body: data
+        })
+        .then(response => response.json())
+        .then(json => {
+            if (json.success) {
+                // Affiche une confirmation simple
+                form.reset();
+                showError(""); // cache l'erreur si présente
+                alert("Commande envoyée ! Nous vous contactons rapidement.");
+                var modal = bootstrap.Modal.getInstance(document.getElementById('commandeModal'));
+                if (modal) modal.hide();
+            } else {
+                showError(json.error || "Erreur lors de l'envoi.");
+                if (Array.isArray(json.missing_fields) && json.missing_fields.length > 0) {
+                  alert("Champs manquants : " + json.missing_fields.join(", "));
+                } else {
+                  alert("Erreur lors de l'envoi : " + (json.error || "Veuillez réessayer plus tard."));
+                }
+            }
+        })
+        .catch(() => {
+            showError("Erreur lors de l'envoi.");
+        });
+    });
+});
+    </script>
+</body>
+</html>

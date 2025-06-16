@@ -1,0 +1,429 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Nous Contacter</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+        <!-- Libraries Stylesheet -->
+        <link href="{% static 'web_site/lib/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'web_site/lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+        <link href="{% static 'web_site/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="{% static 'web_site/css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="{% static 'web_site/css/style.css' %}" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+ 
+
+        <!-- Navbar & Hero Start -->
+       {% include 'web_site/navbar.html' %}
+        <!-- Navbar & Hero End -->
+
+        <!-- Contact Start -->
+        <div class="container-fluid contact-section py-5 bg-light">
+            <div class="container py-4">
+                <!-- En-tête avec CTA clair -->
+                <div class="row mb-5 text-center justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="p-4 rounded-4 shadow-sm" style="background: linear-gradient(90deg, #f8fafc 0%, #e0e7ff 100%);">
+                            <h1 class="display-6 fw-bold text-primary mb-3" style="letter-spacing: 1px;">
+                                <i class="fas fa-envelope-open-text me-2 text-secondary"></i>
+                                Contactez notre équipe
+                            </h1>
+                            <p class="lead mb-0" style="color: #3b2f7f;">
+                                Un projet d'impression ? <span class="fw-semibold">Nos experts vous répondent sous 24h</span>
+                            </p>
+                        </div>
+                    </div>
+
+                                <style>
+                                    /* Animation d'apparition de l'en-tête au scroll */
+                                    .header-animated {
+                                        opacity: 0;
+                                        transform: translateY(40px);
+                                        transition: opacity 0.5s, transform 0.5s;
+                                    }
+                                    .header-animated.visible {
+                                        opacity: 1;
+                                        transform: translateY(0);
+                                    }
+                                </style>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        var header = document.querySelector('.display-6');
+                                        if (header) {
+                                            header.classList.add('header-animated');
+                                            setTimeout(function () {
+                                                header.classList.add('visible');
+                                            }, 300);
+                                        }
+                                    });
+                                </script>
+
+                <div class="row g-4">
+                    <!-- Formulaire simplifié avec validation -->
+                    <div class="col-lg-7">
+                        <div class="bg-white rounded-3 p-4 shadow-sm">
+                            <!-- Toast pour message d'erreur -->
+                            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+                                <div id="formToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                                    <div class="d-flex">
+                                        <div class="toast-body">
+                                            <i class="fas fa-exclamation-triangle me-2"></i> Veuillez remplir tous les champs obligatoires.
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fermer"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <form id="contactForm" novalidate>
+                                <div class="row g-3">
+                                    <!-- Champ caché anti-spam -->
+                                    <input type="text" name="honeypot" style="display:none;">
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="lastname" placeholder="Nom" required>
+                                            <label for="lastname">Nom *</label>
+                                            <div class="invalid-feedback">Veuillez renseigner ce champ</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="firstname" placeholder="Prénom" required>
+                                            <label for="firstname">Prénom *</label>
+                                            <div class="invalid-feedback">Veuillez renseigner ce champ</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="email" placeholder="Email" required>
+                                            <label for="email">Email *</label>
+                                            <div class="invalid-feedback">Email invalide</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="tel" class="form-control" id="phone" placeholder="Téléphone">
+                                            <label for="phone">Téléphone</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="subject" required>
+                                                <option value="">Sélectionnez un sujet *</option>
+                                                <option value="devis">Demande de devis</option>
+                                                <option value="suivi">Suivi de commande</option>
+                                                <option value="technique">Question technique</option>
+                                                <option value="autre">Autre demande</option>
+                                            </select>
+                                            <label for="subject">Sujet *</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Message" id="message" style="height:120px" required></textarea>
+                                            <label for="message">Message *</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100 py-3" type="submit">
+                                            <i class="fas fa-paper-plane me-2"></i> Envoyer
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var form = document.getElementById('contactForm');
+                                    var toastEl = document.getElementById('formToast');
+                                    var toast;
+                                    if (window.bootstrap) {
+                                        toast = new bootstrap.Toast(toastEl);
+                                    }
+
+                                    form.addEventListener('submit', function (e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (!form.checkValidity()) {
+                                            if (toast) toast.show();
+                                            form.classList.add('was-validated');
+                                            return;
+                                        }
+                                        // Préparation des données
+                                        var data = new FormData(form);
+                                        data.append('lastname', document.getElementById('lastname').value);
+                                        data.append('firstname', document.getElementById('firstname').value);
+                                        data.append('email', document.getElementById('email').value);
+                                        data.append('phone', document.getElementById('phone').value);
+                                        data.append('subject', document.getElementById('subject').value);
+                                        data.append('message', document.getElementById('message').value);
+                                        fetch("{% url 'contact_ajax' %}", {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                                'X-CSRFToken': (document.querySelector('[name=csrfmiddlewaretoken]')||{}).value || ''
+                                            },
+                                            body: data
+                                        })
+                                        .then(response => response.json())
+                                        .then(json => {
+                                            if (json.success) {
+                                                document.getElementById('formConfirmation').classList.remove('d-none');
+                                                form.reset();
+                                                form.classList.remove('was-validated');
+                                            } else {
+                                                if (toast) toast.show();
+                                                document.querySelector('#formToast .toast-body').textContent = json.error || 'Erreur lors de l\'envoi.';
+                                            }
+                                        })
+                                        .catch(() => {
+                                            if (toast) toast.show();
+                                            document.querySelector('#formToast .toast-body').textContent = 'Erreur lors de l\'envoi.';
+                                        });
+                                    }, false);
+                                });
+                            </script>
+                            
+                            <!-- Confirmation cachée -->
+                            <div id="formConfirmation" class="alert alert-success mt-3 d-none">
+                                <i class="fas fa-check-circle me-2"></i> Message envoyé ! Nous vous répondons sous 24h.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coordonnées de contact stylisées -->
+                    <div class="col-lg-5">
+                        <div class="bg-white rounded-3 p-4 shadow-sm h-100">
+                            <h4 class="text-primary mb-4">Nos coordonnées</h4>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-3 d-flex align-items-center">
+                                    <span class="btn btn-icon btn-outline-primary rounded-circle me-3">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </span>
+                                    <span>
+                                        Yopougon, Andokoi, Abidjan<br>
+                                        Côte d'Ivoire
+                                    </span>
+                                </li>
+                                <li class="mb-3 d-flex align-items-center">
+                                    <span class="btn btn-icon btn-outline-primary rounded-circle me-3">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <a href="mailto:cismatprint123@gmail.com" class="text-decoration-none text-dark">
+                                        cismatprint123@gmail.com
+                                    </a>
+                                </li>
+                                <li class="mb-3 d-flex align-items-center">
+                                    <span class="btn btn-icon btn-outline-primary rounded-circle me-3">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </span>
+                                    <a href="tel:+2250719647904" class="text-decoration-none text-dark">
+                                        +225 07 19 64 79 04
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="d-grid gap-2">
+                                <a href="https://wa.me/2250719647904" class="btn btn-success py-2" target="_blank">
+                                    <i class="fab fa-whatsapp me-2"></i> WhatsApp
+                                </a>
+                                <a href="https://m.me/cismatprint" class="btn btn-primary py-2" style="background-color: #0084FF;" target="_blank">
+                                    <i class="fab fa-facebook-messenger me-2"></i> Messenger
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                   <!-- FAQ Section -->
+    <section class="py-5" style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);">
+        <div class="container py-4">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="mb-3 fw-bold" style="color: #3b2f7f;">Questions fréquentes</h2>
+                    <p class="text-muted fs-5">Trouvez rapidement des réponses à vos questions les plus courantes</p>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="accordion" id="faqAccordionNew">
+                        <div class="accordion-item mb-3 shadow-sm rounded-3 border-0" style="background: #fff;">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqNew1" style="color: #3b2f7f;">
+                                    <span class="me-3 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #e0e7ff; border-radius: 50%;">
+                                        <i class="fas fa-clock"></i>
+                                    </span>
+                                    Quels sont vos délais de production ?
+                                </button>
+                            </h3>
+                            <div id="faqNew1" class="accordion-collapse collapse" data-bs-parent="#faqAccordionNew">
+                                <div class="accordion-body">
+                                    <ul class="mb-2">
+                                        <li><strong>Flyers/cartes de visite :</strong> 24h en express, 2 jours en standard</li>
+                                        <li><strong>Affiches grand format :</strong> 48-72h</li>
+                                        <li><strong>Gadgets et pub :</strong> 24h-48h</li>
+                                    </ul>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary">Options express disponibles</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item mb-3 shadow-sm rounded-3 border-0" style="background: #fff;">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqNew2" style="color: #3b2f7f;">
+                                    <span class="me-3 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #e0e7ff; border-radius: 50%;">
+                                        <i class="fas fa-file-alt"></i>
+                                    </span>
+                                    Comment préparer mes fichiers pour l'impression ?
+                                </button>
+                            </h3>
+                            <div id="faqNew2" class="accordion-collapse collapse" data-bs-parent="#faqAccordionNew">
+                                <div class="accordion-body">
+                                    <ul class="mb-2">
+                                        <li>Format PDF/X-4 recommandé</li>
+                                        <li>Résolution 300 DPI minimum</li>
+                                        <li>Marges de sécurité : 5mm</li>
+                                        <li>Contours de fond perdus : 3mm</li>
+                                        <li>Couleurs en CMJN</li>
+                                        <li>Polices vectorisées ou incorporées</li>
+                                    </ul>
+                                    <span class="badge bg-success bg-opacity-10 text-success">Assistance gratuite sur demande</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item mb-3 shadow-sm rounded-3 border-0" style="background: #fff;">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqNew3" style="color: #3b2f7f;">
+                                    <span class="me-3 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #e0e7ff; border-radius: 50%;">
+                                        <i class="fas fa-truck"></i>
+                                    </span>
+                                    Proposez-vous des services de livraison ?
+                                </button>
+                            </h3>
+                            <div id="faqNew3" class="accordion-collapse collapse" data-bs-parent="#faqAccordionNew">
+                                <div class="accordion-body">
+                                    <ul class="mb-2">
+                                        <li><strong>Retrait gratuit</strong> à Yopougon</li>
+                                        <li><strong>Livraison Abidjan</strong> : 1.000 fcfa (24-48h)</li>
+                                        <li><strong>Express</strong> : 2.000 fcfa (moins de 24h)</li>
+                                        <li><strong>Intérieur du pays</strong> via transporteurs (UTB, AVS, etc.)</li>
+                                    </ul>
+                                    <span class="badge bg-warning bg-opacity-10 text-warning">Emballage sécurisé</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item mb-3 shadow-sm rounded-3 border-0" style="background: #fff;">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faqNew4" style="color: #3b2f7f;">
+                                    <span class="me-3 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #e0e7ff; border-radius: 50%;">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </span>
+                                    Quels sont vos modes de paiement ?
+                                </button>
+                            </h3>
+                            <div id="faqNew4" class="accordion-collapse collapse" data-bs-parent="#faqAccordionNew">
+                                <div class="accordion-body">
+                                    <ul class="mb-2">
+                                        <li>Espèces</li>
+                                        <li>Mobile Money (MTN, Orange, Moov)</li>
+                                        <li>Virement bancaire</li>
+                                        <li>Wave</li>
+                                    </ul>
+                                    <span class="badge bg-info bg-opacity-10 text-info">Acompte de 50% pour les grosses commandes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} <div class="text-center mt-4">
+                        <a href="{% url 'faq' %}" class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm" style="font-weight: 500;">
+                            <i class="fas fa-question-circle me-2"></i> Voir toutes les questions
+                        </a>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <style>
+    @media (max-width: 767.98px) {
+        #faqAccordionNew .accordion-button {
+            font-size: 1rem;
+            padding: 1rem 0.75rem;
+        }
+        #faqAccordionNew .accordion-header span {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 1rem;
+        }
+    }
+    </style>
+
+                <!-- Carte interactive -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d317715.7119263355!2d-4.191942262500012!3d5.3122724999999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1eb6f3f8c2f91%3A0x3b9a9c9e9c9e9c9e!2sYopougon%2C%20Abidjan%2C%20C%C3%B4te%20d%27Ivoire!5e0!3m2!1sfr!2sfr!4v1634567890123!5m2!1sfr!2sfr" 
+                                    loading="lazy" 
+                                    allowfullscreen
+                                    class="w-100 h-100">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contact End -->
+
+        <!-- Footer Start -->
+   {% include 'web_site/footer.html' %}
+        <!-- Footer End -->
+        
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'web_site/lib/wow/wow.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/easing/easing.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/waypoints/waypoints.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/counterup/counterup.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/lightbox/js/lightbox.min.js' %}"></script>
+        <script src="{% static 'web_site/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+        <!-- Template Javascript -->
+        <script src="{% static 'web_site/js/main.js' %}"></script>
+    </body>
+
+</html>
