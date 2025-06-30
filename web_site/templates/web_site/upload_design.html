@@ -1,0 +1,506 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Upload de design - {{ model.nom }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'web_site/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'web_site/css/style.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        :root {
+            --primary-color: #506fff;
+            --secondary-color: #ffb347;
+            --dark-color: #1a1a1a;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --border-radius: 15px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.8" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.6" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .breadcrumb-modern {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 12px 20px;
+            margin-bottom: 25px;
+        }
+
+        .breadcrumb-modern a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .breadcrumb-modern a:hover {
+            color: var(--secondary-color);
+        }
+
+        .upload-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 25px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-label .option-required {
+            color: var(--danger-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .form-control {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(80, 111, 255, 0.1);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            padding: 20px;
+            border: 2px dashed #e9ecef;
+            border-radius: 10px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: var(--primary-color);
+            background: rgba(80, 111, 255, 0.03);
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            color: var(--medium-gray);
+            font-size: 0.95rem;
+        }
+
+        .file-upload-label i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .file-preview {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            display: none;
+        }
+
+        .file-preview img {
+            max-width: 100%;
+            max-height: 100px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 20px rgba(80, 111, 255, 0.2);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(80, 111, 255, 0.3);
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 0;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .upload-section {
+                padding: 20px;
+            }
+
+            .btn-submit {
+                padding: 10px 30px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'web_site/navbar.html' %}
+<br><br>
+    <!-- Breadcrumb -->
+    <div class="container mt-4">
+        <nav class="breadcrumb-modern">
+            <a href="/"><i class="fas fa-home"></i> Accueil</a>
+            <span class="mx-2">›</span>
+            <a href="{% url 'all_service' %}"><i class="fas fa-cogs"></i> Services</a>
+            <span class="mx-2">›</span>
+            <a href="{% url 'detail_service' model.id_service.id %}">{{ model.id_service.titre }}</a>
+            <span class="mx-2">›</span>
+            <a href="{% url 'model_detail' model.id %}">{{ model.nom }}</a>
+            <span class="mx-2">›</span>
+            <span class="text-muted"><i class="fas fa-upload"></i> Upload Design</span>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="display-4 font-weight-bold mb-3">
+                <i class="fas fa-upload"></i> Upload de design - {{ model.nom }}
+            </h1>
+            <p class="lead">Téléchargez votre fichier de design personnalisé pour votre {{ model.id_service.titre|lower }}</p>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="upload-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-file-upload"></i> Téléchargez votre design
+                    </h3>
+
+                    {% if message %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+
+                    <form id="uploadForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="model_id" value="{{ model.id }}">
+
+                        <!-- Vos informations personnelles -->
+                        <div class="form-group">
+                            <label class="form-label">Nom complet <span class="option-required">*</span></label>
+                            <input type="text" class="form-control" name="nom_client" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email <span class="option-required">*</span></label>
+                            <input type="email" class="form-control" name="email_client" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Téléphone <span class="option-required">*</span></label>
+                            <input type="tel" class="form-control" name="telephone_client" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Adresse de livraison <span class="option-required">*</span></label>
+                            <textarea class="form-control" name="adresse_livraison" rows="3" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Fichier de design <span class="option-required">*</span></label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" name="design_file" id="designFile" accept=".pdf,.jpg,.png,.ai,.psd" required>
+                                <div class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i><br>
+                                    Glissez et déposez votre fichier ici ou cliquez pour sélectionner<br>
+                                    <small>(Formats acceptés : PDF, JPG, PNG, AI, PSD - Max 10MB)</small>
+                                </div>
+                            </div>
+                            <div class="file-preview" id="filePreview">
+                                <p id="fileName"></p>
+                                <img id="previewImage" alt="Aperçu du fichier">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Quantité <span class="option-required">*</span></label>
+                            <input type="number" class="form-control" name="quantity" min="1" required value="{{ customization_data.quantity|default:1 }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Instructions supplémentaires <small class="text-muted">(optionnel)</small></label>
+                            <textarea class="form-control" name="instructions_speciales" rows="3" placeholder="Ajoutez des instructions pour votre design..."></textarea>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-upload me-2"></i> Soumettre ma commande
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="preview-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-eye"></i> Résumé
+                    </h3>
+                    <div class="preview-content">
+                        <div class="preview-item">
+                            <strong>Produit:</strong> <span>{{ model.nom }}</span>
+                        </div>
+                        <div class="preview-item">
+                            <strong>Service:</strong> <span>{{ model.id_service.titre }}</span>
+                        </div>
+                        {% if customization_data.quantity %}
+                        <div class="preview-item">
+                            <strong>Quantité:</strong> <span>{{ customization_data.quantity }} unité{% if customization_data.quantity > 1 %}s{% endif %}</span>
+                        </div>
+                        {% endif %}
+                        {% if customization_data.options %}
+                        {% for key, value in customization_data.options.items %}
+                        <div class="preview-item">
+                            <strong>{{ key }}:</strong> <span>{{ value }}</span>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% if customization_data.custom_text %}
+                        <div class="preview-item">
+                            <strong>Texte personnalisé:</strong> <span>"{{ customization_data.custom_text }}"</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="price-section">
+                        <div class="price-amount">{{ customization_data.total|floatformat:0 }}</div>
+                        <div class="price-unit">FCFA / {{ model.unite_mesure }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="{% url 'customize_service_model' model.id %}" class="btn btn-back me-3">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la personnalisation
+                </a>
+                <a href="{% url 'model_detail' model.id %}" class="btn btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au modèle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            // Gestion de l'upload de fichier
+            $('#designFile').on('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+                    if (file.size > maxSize) {
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: 'Le fichier dépasse la taille maximale de 10MB.',
+                            icon: 'error',
+                            confirmButtonColor: '#506fff'
+                        });
+                        $(this).val('');
+                        return;
+                    }
+
+                    const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'application/postscript', 'image/vnd.adobe.photoshop'];
+                    if (!validTypes.includes(file.type)) {
+                        Swal.fire({
+                            title: 'Erreur',
+                            text: 'Format de fichier non supporté. Utilisez PDF, JPG, PNG, AI ou PSD.',
+                            icon: 'error',
+                            confirmButtonColor: '#506fff'
+                        });
+                        $(this).val('');
+                        return;
+                    }
+
+                    $('#fileName').text(file.name);
+                    $('#filePreview').show();
+
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            $('#previewImage').attr('src', e.target.result).show();
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        $('#previewImage').hide();
+                    }
+                } else {
+                    $('#filePreview').hide();
+                    $('#fileName').text('');
+                    $('#previewImage').attr('src', '').hide();
+                }
+            });
+
+            // Validation du formulaire
+            $('#uploadForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                $('[required]').each(function() {
+                    if (!$(this).val() || $(this).val().trim() === '') {
+                        $(this).addClass('is-invalid');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                if (isValid) {
+                    Swal.fire({
+                        title: 'Confirmer l\'envoi',
+                        text: 'Êtes-vous sûr de vouloir soumettre ce design ?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Oui, soumettre',
+                        cancelButtonText: 'Annuler',
+                        confirmButtonColor: '#506fff'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.submit();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Champs manquants',
+                        text: 'Veuillez remplir tous les champs obligatoires.',
+                        icon: 'warning',
+                        confirmButtonColor: '#506fff'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

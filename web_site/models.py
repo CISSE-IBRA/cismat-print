@@ -122,6 +122,17 @@ class Service_Model(models.Model):
         return f"{self.nom} - {self.prix_unitaire}fcfa/{self.unite_mesure}"
 
 
+class Service_ModelOptionValue(models.Model):
+    """Valeurs possibles pour les options de personnalisation"""
+    valeur = models.CharField(max_length=100, help_text="Ex: Rouge, A4, Haute qualité")
+    
+    class Meta:
+        verbose_name = 'Valeur d\'option'
+        verbose_name_plural = 'Valeurs d\'options'
+    
+    def __str__(self):
+        return self.valeur
+
 class Service_ModelDetail(models.Model):
     """Options et détails configurables pour les services"""
     TYPE_CHOICES = [
@@ -135,10 +146,10 @@ class Service_ModelDetail(models.Model):
     service_model = models.ForeignKey(Service_Model, on_delete=models.CASCADE, related_name='details')
     nom_option = models.CharField(max_length=100, help_text="couleur, format, qualité, etc.")
     type_option = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    valeurs_possibles = models.JSONField(
-        blank=True, 
-        null=True,
-        help_text="Format JSON: {'options': ['Rouge', 'Bleu', 'Vert']}"
+    valeurs_possibles = models.ManyToManyField(
+        Service_ModelOptionValue,
+        blank=True,
+        help_text="Sélectionnez les valeurs possibles pour cette option (pour SELECT, RADIO, CHECKBOX)"
     )
     obligatoire = models.BooleanField(default=False)
     prix_supplementaire = models.DecimalField(max_digits=8, decimal_places=2, default=0)
@@ -149,7 +160,7 @@ class Service_ModelDetail(models.Model):
         unique_together = ['service_model', 'nom_option']
     
     def __str__(self):
-        return f"{self.service.nom} - {self.nom_option}"
+        return f"{self.service_model.id_service.titre} - {self.nom_option}"
 
 
 class Commande(models.Model):

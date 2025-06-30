@@ -37,17 +37,24 @@ class CategorieAdmin(admin.ModelAdmin):
 @admin.register(Service_Model)
 class Service_ModelAdmin(admin.ModelAdmin):
     list_display = ('nom', 'prix_unitaire', 'unite_mesure', 'disponible')
-
+    search_fields = ('nom',)
 
 class ServiceDetailInline(admin.TabularInline):
     model = Service_ModelDetail
     extra = 1
 
+@admin.register(Service_ModelOptionValue)
+class ServiceModelOptionValueAdmin(admin.ModelAdmin):
+    list_display = ('valeur',)
+    search_fields = ('valeur',)
+
 @admin.register(Service_ModelDetail)
-class ServiceDetailAdmin(admin.ModelAdmin):
-    list_display = ('service_model', 'nom_option', 'type_option', 'obligatoire', 'prix_supplementaire')
-    list_filter = ('service_model', 'type_option', 'obligatoire')
-    search_fields = ('service__nom', 'nom_option')
+class ServiceModelDetailAdmin(admin.ModelAdmin):
+    list_display = ('nom_option', 'service_model', 'type_option', 'obligatoire', 'prix_supplementaire')
+    list_filter = ('type_option', 'obligatoire', 'service_model')
+    search_fields = ('nom_option', 'service_model__nom', 'service_model__id_service__titre')
+    autocomplete_fields = ['service_model']
+    filter_horizontal = ('valeurs_possibles',) 
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
@@ -88,10 +95,23 @@ class CommandeAdmin(admin.ModelAdmin):
 
 @admin.register(CommandeItem)
 class CommandeItemAdmin(admin.ModelAdmin):
-    list_display = ('commande', 'service', 'quantite', 'prix_unitaire', 'prix_total')
+    list_display = ('commande', 'service', 'quantite', 'prix_unitaire', 'prix_total', 'fichiers_lies')
     list_filter = ('commande__statut', 'service')
     search_fields = ('commande__numero_commande', 'service__nom')
     inlines = [FichierInline]
+
+    def fichiers_lies(self, obj):
+        fichiers = obj.fichiers.all()
+        if not fichiers:
+            return "-"
+        links = []
+        for f in fichiers:
+            if f.fichier:
+                url = f.fichier.url
+                links.append(f'<a href="{url}" target="_blank">{f.nom_original}</a>')
+        return '<br>'.join(links)
+    fichiers_lies.short_description = "Fichiers"
+    fichiers_lies.allow_tags = True
 
 @admin.register(Fichier)
 class FichierAdmin(admin.ModelAdmin):

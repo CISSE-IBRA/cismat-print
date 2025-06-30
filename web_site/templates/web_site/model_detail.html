@@ -1,0 +1,525 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>{{ model.nom }} - {{ model.id_service.titre }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'web_site/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'web_site/css/style.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    
+    <style>
+        :root {
+            --primary-color: #506fff;
+            --secondary-color: #ffb347;
+            --dark-color: #1a1a1a;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --border-radius: 20px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.8" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.6" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .breadcrumb-modern {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 15px 25px;
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb-modern a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-modern a:hover {
+            color: var(--secondary-color);
+        }
+
+        .model-detail-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .model-detail-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .model-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        }
+
+        .model-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .model-image:hover {
+            transform: scale(1.05);
+        }
+
+        .availability-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .available {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+        }
+
+        .unavailable {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+        }
+
+        .model-info {
+            padding: 40px;
+        }
+
+        .model-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+        .model-service {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .model-description {
+            color: var(--medium-gray);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .price-section {
+            background: linear-gradient(135deg, var(--light-gray) 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .price-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .price-unit {
+            color: var(--medium-gray);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .specifications-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            color: white;
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn-customize {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-customize:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            color: var(--primary-color);
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .floating-btn {
+            display: block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            line-height: 60px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .model-title {
+                font-size: 1.8rem;
+            }
+            
+            .price-amount {
+                font-size: 2rem;
+            }
+            
+            .floating-elements {
+                display: none;
+            }
+            
+            .model-info {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'web_site/navbar.html' %}
+    <br>
+    <br>
+    <!-- Breadcrumb -->
+    <div class="container mt-4">
+        <nav class="breadcrumb-modern">
+            <a href="/">Accueil</a>
+            <span class="mx-2">›</span>
+            <a href="{% url 'all_service' %}">Services</a>
+            <span class="mx-2">›</span>
+            <a href="{% url 'detail_service' model.id_service.id %}">{{ model.id_service.titre }}</a>
+            <span class="mx-2">›</span>
+            <span class="text-muted">{{ model.nom }}</span>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 font-weight-bold mb-3">{{ model.nom }}</h1>
+                    <p class="lead">Découvrez les détails de votre {{ model.id_service.titre|lower }}</p>
+                </div>
+                <div class="col-lg-4 text-lg-right">
+                    <div class="price-section bg-white text-dark">
+                        <div class="price-amount">{{ model.prix_unitaire|floatformat:0 }}</div>
+                        <div class="price-unit">FCFA / {{ model.unite_mesure }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div class="row">
+            <!-- Image et informations principales -->
+            <div class="col-lg-6">
+                <div class="model-detail-card">
+                    <div class="model-image-container">
+                        {% if model.image %}
+                            <img src="{{ model.image.url }}" alt="{{ model.nom }}" class="model-image">
+                        {% else %}
+                            <img src="https://via.placeholder.com/600x400/506fff/ffffff?text={{ model.nom|urlencode }}" alt="{{ model.nom }}" class="model-image">
+                        {% endif %}
+                        
+                        {% if model.disponible %}
+                            <span class="availability-badge available">
+                                <i class="fas fa-check-circle me-1"></i>Disponible
+                            </span>
+                        {% else %}
+                            <span class="availability-badge unavailable">
+                                <i class="fas fa-times-circle me-1"></i>Indisponible
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Spécifications techniques -->
+                <div class="specifications-card">
+                    <h3 class="section-title">Spécifications</h3>
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <div>
+                            <strong>Format</strong><br>
+                            <span class="text-muted">{{ model.unite_mesure }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Délai de livraison</strong><br>
+                            <span class="text-muted">2-5 jours ouvrables</span>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Garantie qualité</strong><br>
+                            <span class="text-muted">Satisfaction garantie</span>
+                        </div>
+                    </div>
+                    {% if model.specifications_techniques %}
+                    <div class="spec-item">
+                        
+                        <div>
+                            <strong>Spécifications techniques</strong><br>
+                            <span class="text-muted">{{ model.specifications_techniques }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Informations principales -->
+            <div class="col-lg-6">
+                <div class="model-detail-card">
+                    <div class="model-info">
+                        <div class="model-service">
+                            <i class="fas fa-tag me-2"></i>{{ model.id_service.titre }}
+                        </div>
+                        <h2 class="model-title">{{ model.nom }}</h2>
+                        <div class="model-description">{{ model.description }}</div>
+                    </div>
+                </div>
+
+                <!-- Call to Action -->
+                <div class="cta-section">
+                    <h4 class="mb-3">Prêt à personnaliser ?</h4>
+                    <p class="mb-4">Configurez votre produit selon vos besoins en quelques clics.</p>
+                    
+                    {% if model.disponible %}
+                        <a href="{% url 'customize_service_model' model.id %}" class="btn btn-customize me-3 mb-3">
+                            <i class="fas fa-cog me-2"></i>Personnaliser maintenant
+                        </a>
+                        <p class="mx-2 fw-bold" style="color: #fff; font-size: 1.1rem;">ou</p>
+                        <a href="{% url 'upload_design' model.id %}" class="btn btn-outline-light me-3">
+                            <i class="fas fa-upload me-2"></i>Ajouter votre design
+                        </a>
+                        <a href="{% url 'rdv' %}?model_id={{ model.id }}" class="btn btn-outline-light">
+                            <i class="fas fa-user-tie me-2"></i>Contacter un designer
+                        </a>
+                    {% else %}
+                        <button class="btn btn-secondary" disabled>
+                            <i class="fas fa-times-circle me-2"></i>Temporairement indisponible
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <a href="{% url 'detail_service' model.id_service.id %}" class="btn btn-back me-3">
+                    <i class="fas fa-arrow-left me-2"></i>Retour aux modèles
+                </a>
+                <a href="{% url 'all_service' %}" class="btn btn-back">
+                    <i class="fas fa-home me-2"></i>Tous les services
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Éléments flottants -->
+    <div class="floating-elements">
+        {% comment %} <a href="#" class="floating-btn" title="Aide" data-bs-toggle="modal" data-bs-target="#helpModal">
+            <i class="fas fa-question"></i>
+        </a> {% endcomment %}
+        <a href="tel:+2250719647904" class="floating-btn" title="Appeler">
+            <i class="fas fa-phone"></i>
+        </a>
+        {% comment %} <a href="#" class="floating-btn back-to-top" title="Retour en haut">
+            <i class="fas fa-arrow-up"></i>
+        </a> {% endcomment %}
+    </div>
+
+    {% include 'web_site/footer.html' %}
+
+    <!-- Modal d'aide -->
+    <div class="modal fade" id="helpModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Besoin d'aide ?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-phone-alt text-primary me-2"></i>Contactez-nous</h6>
+                            <p>Téléphone: +225 XX XX XX XX<br>
+                            Email: contact@imprimepro.ci</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-clock text-primary me-2"></i>Horaires</h6>
+                            <p>Lun-Ven: 8h-18h<br>
+                            Samedi: 8h-14h</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6><i class="fas fa-info-circle text-primary me-2"></i>Guide de personnalisation</h6>
+                    <ol>
+                        <li>Cliquez sur "Personnaliser maintenant"</li>
+                        <li>Sélectionnez vos options de personnalisation</li>
+                        <li>Choisissez la quantité désirée</li>
+                        <li>Ajoutez des instructions si nécessaire</li>
+                        <li>Confirmez votre commande</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'web_site/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/lightbox/js/lightbox.min.js' %}"></script>
+    <script src="{% static 'web_site/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'web_site/js/main.js' %}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.model-detail-card').addClass('animate__animated animate__fadeInUp');
+            
+            //$('.back-to-top').click(function(e) {
+            //    e.preventDefault();
+            //    $('html, body').animate({scrollTop: 0}, 800);
+            //});
+
+            // Effet parallax désactivé pour garder l'image fixe dans son conteneur
+            //$(window).scroll(function() {
+            //    let scrolled = $(window).scrollTop();
+            //    let parallax = scrolled * 0.5;
+            //    $('.model-image').css('transform', 'translateY(' + parallax + 'px)');
+            //});
+        });
+    </script>
+</body>
+</html>

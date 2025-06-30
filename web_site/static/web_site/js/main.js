@@ -26,7 +26,7 @@
 
 
     // Hero Header carousel
-    $(".header-carousel").owlCarousel({
+    /* $(".header-carousel").owlCarousel({
         animateOut: 'fadeOut',
         items: 1,
         margin: 0,
@@ -41,10 +41,10 @@
             '<i class="bi bi-arrow-right"></i>'
         ],
     });
-
+ */
 
     // attractions carousel
-    $(".blog-carousel").owlCarousel({
+    /* $(".blog-carousel").owlCarousel({
         autoplay: true,
         smartSpeed: 1500,
         center: false,
@@ -74,11 +74,11 @@
                 items:3
             }
         }
-    });
+    }); */
 
 
     // testimonial carousel
-    $(".testimonial-carousel").owlCarousel({
+    /* $(".testimonial-carousel").owlCarousel({
         autoplay: true,
         smartSpeed: 1500,
         center: false,
@@ -108,14 +108,14 @@
                 items:3
             }
         }
-    });
+    }); */
 
 
     // Facts counter
-    $('[data-toggle="counter-up"]').counterUp({
+    /* $('[data-toggle="counter-up"]').counterUp({
         delay: 5,
         time: 2000
-    });
+    }); */
 
 
    // Back to top button

@@ -20,4 +20,24 @@ urlpatterns = [
     path('commande/<int:id>/', detail_service, name='commande_detail_service'),
     path('rdv_ajax/', views.rdv_ajax, name='rdv_ajax'),
     path('commande_ajax/', views.commande_ajax, name='commande_ajax'),
+    
+    # Page détail modèle
+    path('model/<int:model_id>/', views.model_detail, name='model_detail'),
+    
+    path('model/<int:model_id>/customize/', views.customize_service_model, name='customize_service_model'),
+    
+    # Traitement de la personnalisation
+    path('model/customize/', views.process_model_customization, name='process_customization'),
+    
+    path('service/<int:model_id>/upload/', views.upload_design, name='upload_design'),
+    # Confirmation de commande
+    path('commande/confirmation/', views.order_confirmation, name='order_confirmation'),
+        
+    # APIs AJAX
+    path('api/model/price/', views.get_model_price, name='get_model_price'),
+    path('api/model/<int:model_id>/availability/', views.check_model_availability, name='check_availability'),
+    path('api/models/search/', views.search_models, name='search_models'),
+    
+    # Upload design personnalisé
+    path('model/<int:model_id>/upload-design/', views.upload_design, name='upload_design'),
 ]
