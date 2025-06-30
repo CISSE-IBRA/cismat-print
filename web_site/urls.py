@@ -20,4 +20,6 @@ urlpatterns = [
     path('commande/<int:id>/', detail_service, name='commande_detail_service'),
     path('rdv_ajax/', views.rdv_ajax, name='rdv_ajax'),
     path('commande_ajax/', views.commande_ajax, name='commande_ajax'),
+    path('detail_article/<int:id>/', views.detail_model, name='detail_article'),
+    path('personnaliser/<int:id>/', views.personnaliser_modele, name='personnaliser_modele'),
 ]

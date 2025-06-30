@@ -126,14 +126,18 @@ def detail_service(request, id):
         'NavNosServices': RecuperationService(),
     })
 
+# Détail du modèle pour afficher le detail possible d'un modele
 def detail_model(request, id):
     model = Service_Model.objects.get(id=id)
     service = model.id_service
-    return render(request, 'web_site/commande.html', {
+    similaires = Service_Model.objects.filter(id_service=service).exclude(id=id)[:8]  # 8 produits max
+    return render(request, 'web_site/detail_article.html', {
         'model': model,
         'service': service,
+        'similaires': similaires,
         'NavNosServices': RecuperationService(),
     })
+
 
 @csrf_exempt  # Pour AJAX, à sécuriser si besoin
 def contact_ajax(request):
@@ -280,3 +284,12 @@ Commentaires : {commentaires}
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Méthode non autorisée.'})
+
+def personnaliser_modele(request, id):
+    model = Service_Model.objects.get(id=id)
+    service = model.id_service
+    return render(request, 'web_site/personnaliser_modele.html', {
+        'model': model,
+        'service': service,
+        'NavNosServices': RecuperationService(),
+    })

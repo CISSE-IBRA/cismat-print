@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Personnaliser {{ model.nom }} | Cismat Print</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% static 'web_site/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body { background: #f8fafc; font-family: 'Inter', Arial, sans-serif; }
+        .custom-area { background: #fff; border-radius: 1rem; box-shadow: 0 4px 24px #506fff22; padding: 2rem; max-width: 1000px; margin: 2rem auto; }
+        .toolbar { margin-bottom: 1.5rem; gap: 0.5rem; flex-wrap: wrap; }
+        .toolbar input[type="color"] { width: 40px; height: 40px; border: none; }
+        .toolbar input[type="file"] { display: inline-block; }
+        .toolbar input[type="text"] { width: 180px; }
+        .toolbar select, .toolbar input[type="number"] { width: 120px; }
+        .btn-action { margin-right: 0.5rem; min-width: 120px; }
+        #canvasZone { border: 2px dashed #fbbf24; background: #fffbe6; margin: 0 auto 2rem auto; display: flex; justify-content: center; align-items: center; border-radius: 12px; }
+        @media (max-width: 800px) {
+            #canvasZone { width: 100%; }
+            .custom-area { padding: 1rem; }
+            .toolbar input[type="text"], .toolbar select, .toolbar input[type="number"] { width: 100px; }
+        }
+        @media (max-width: 600px) {
+            #fabricCanvas { width: 100% !important; height: auto !important; }
+            #canvasZone { padding: 0; }
+        }
+    </style>
+    <!-- Fabric.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+</head>
+<body>
+    {% include 'web_site/navbar.html' %}
+    <div class="custom-area">
+        <h2 class="mb-4 text-primary"><i class="fas fa-pencil-ruler"></i> Personnaliser : {{ model.nom }}</h2>
+        <div class="toolbar d-flex align-items-center">
+            <input type="text" id="textInput" class="form-control" placeholder="Ajouter un texte">
+            <select id="fontSelect" class="form-select">
+                <option value="Inter">Inter</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans</option>
+                <option value="Impact">Impact</option>
+            </select>
+            <input type="color" id="colorInput" value="#1f2937" title="Couleur du texte">
+            <input type="number" id="fontSizeInput" value="32" min="10" max="120" class="form-control" title="Taille">
+            <button class="btn btn-primary btn-action" id="addTextBtn"><i class="fas fa-font"></i> Ajouter texte</button>
+            <input type="file" id="imgInput" accept="image/*" class="form-control" style="width:auto;">
+            <button class="btn btn-success btn-action" id="downloadBtn"><i class="fas fa-download"></i> Télécharger</button>
+            <button class="btn btn-secondary btn-action" id="resetBtn"><i class="fas fa-undo"></i> Réinitialiser</button>
+        </div>
+        <div id="canvasZone">
+            <canvas id="fabricCanvas" width="700" height="500" style="background:#fffbe6; border-radius:12px; max-width:100%;"></canvas>
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'detail_article' model.id %}" class="btn btn-outline-dark"><i class="fas fa-arrow-left me-2"></i>Retour au produit</a>
+        </div>
+    </div>
+    {% include 'web_site/footer.html' %}
+    <script>
+        // Initialisation Fabric.js
+        const canvas = new fabric.Canvas('fabricCanvas', {
+            backgroundColor: '#fffbe6',
+            preserveObjectStacking: true
+        });
+
+        // Charger l'image du modèle comme fond
+        {% if model.image %}
+        fabric.Image.fromURL("{{ model.image.url }}", function(img) {
+            img.set({
+                selectable: false,
+                evented: false,
+                left: 0,
+                top: 0,
+                scaleX: canvas.width / img.width,
+                scaleY: canvas.height / img.height
+            });
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+        });
+        {% endif %}
+
+        // Ajouter du texte
+        document.getElementById('addTextBtn').onclick = function() {
+            let val = document.getElementById('textInput').value.trim();
+            if (!val) return;
+            let color = document.getElementById('colorInput').value;
+            let font = document.getElementById('fontSelect').value;
+            let size = parseInt(document.getElementById('fontSizeInput').value) || 32;
+            let text = new fabric.IText(val, {
+                left: 100, top: 100,
+                fill: color,
+                fontFamily: font,
+                fontSize: size,
+                fontWeight: 'bold',
+                editable: true
+            });
+            canvas.add(text).setActiveObject(text);
+            document.getElementById('textInput').value = '';
+        };
+
+        // Ajouter une image
+        document.getElementById('imgInput').onchange = function(e) {
+            let file = e.target.files[0];
+            if (!file) return;
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                fabric.Image.fromURL(ev.target.result, function(img) {
+                    img.set({ left: 120, top: 120, scaleX: 0.3, scaleY: 0.3 });
+                    canvas.add(img).setActiveObject(img);
+                });
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        };
+
+        // Télécharger le résultat
+        document.getElementById('downloadBtn').onclick = function() {
+            canvas.discardActiveObject();
+            canvas.renderAll();
+            let link = document.createElement('a');
+            link.download = 'personnalisation-{{ model.nom|slugify }}.png';
+            link.href = canvas.toDataURL({format: 'png'});
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        // Réinitialiser le canvas (garde le fond)
+        document.getElementById('resetBtn').onclick = function() {
+            let bg = canvas.backgroundImage;
+            canvas.clear();
+            if(bg) canvas.setBackgroundImage(bg, canvas.renderAll.bind(canvas));
+        };
+
+        // Raccourci suppression
+        document.addEventListener('keydown', function(e) {
+            if ((e.key === "Delete" || e.key === "Backspace") && canvas.getActiveObject()) {
+                canvas.remove(canvas.getActiveObject());
+                canvas.discardActiveObject();
+                canvas.renderAll();
+            }
+        });
+
+        // Mise à jour couleur, police, taille sur sélection
+        canvas.on('selection:created', updateToolbar);
+        canvas.on('selection:updated', updateToolbar);
+        function updateToolbar() {
+            let obj = canvas.getActiveObject();
+            if (obj && obj.type === 'i-text') {
+                document.getElementById('colorInput').value = obj.fill;
+                document.getElementById('fontSelect').value = obj.fontFamily;
+                document.getElementById('fontSizeInput').value = obj.fontSize;
+            }
+        }
+        document.getElementById('colorInput').onchange = function() {
+            let obj = canvas.getActiveObject();
+            if (obj && obj.type === 'i-text') {
+                obj.set('fill', this.value);
+                canvas.renderAll();
+            }
+        };
+        document.getElementById('fontSelect').onchange = function() {
+            let obj = canvas.getActiveObject();
+            if (obj && obj.type === 'i-text') {
+                obj.set('fontFamily', this.value);
+                canvas.renderAll();
+            }
+        };
+        document.getElementById('fontSizeInput').onchange = function() {
+            let obj = canvas.getActiveObject();
+            if (obj && obj.type === 'i-text') {
+                obj.set('fontSize', parseInt(this.value));
+                canvas.renderAll();
+            }
+        };
+    </script>
+</body>
+</html>
